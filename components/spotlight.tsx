@@ -23,7 +23,6 @@ export default function Spotlight() {
   // }, []);
 
   const renderItem = ({ item }: { item: any }) => (
-
     <View style={styles.itemContainer}>
       <View style={styles.detailsContainer}>
       <Image source={{ uri: item.poster }} style={styles.poster} />
