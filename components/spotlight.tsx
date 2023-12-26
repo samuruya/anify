@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, Dimensions } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native';
 import data from './spotlightData.json';
 import { withLayoutContext } from 'expo-router';
 
+const windowWidth = Dimensions.get('window').width;
 
 export default function Spotlight() {
 
@@ -36,12 +37,23 @@ export default function Spotlight() {
   );
 
   return (
-    <Carousel
+    // <Carousel
+    //   data={data.spotlightAnimes}
+    //   renderItem={renderItem}
+    //   sliderWidth={300}
+    //   itemWidth={300}
+    // />
+    <View>
+    <Text style={styles.label}>Spotlight</Text>
+    <FlatList
       data={data.spotlightAnimes}
       renderItem={renderItem}
-      sliderWidth={300}
-      itemWidth={300}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      pagingEnabled
+      bounces={true}
     />
+    </View>
   );
 }
 
@@ -49,22 +61,21 @@ export default function Spotlight() {
 const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
-    margin: 10,
-    borderBottomWidth: 1,
+    // marginTop: 10,
+    // borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    // justifyContent: 'flex-end',
     alignItems: 'center',
+    height: 300,
+    width: windowWidth,
   },
   poster: {
-    width: 500,
+    width: 350,
     height: 200,
-    // margin: 10,
   },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFF',
-    zIndex: 1000,
   },
   description: {
     fontSize: 14,
@@ -77,6 +88,16 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flex: 1,
-    maxHeight: 300,
+    // maxHeight: 300,
+    alignItems: 'center',
   },
+  label: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginLeft: 10,
+    marginTop: 10,
+    color: '#555',
+  },
+ 
 });
