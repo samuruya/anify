@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, Dimensions } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+// import Carousel from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native';
 import data from './spotlightData.json';
 import { withLayoutContext } from 'expo-router';
 
 const windowWidth = Dimensions.get('window').width;
+// const navigation = useNavigation();
 
 export default function Spotlight() {
 
@@ -24,16 +25,16 @@ export default function Spotlight() {
   // }, []);
 
   const renderItem = ({ item }: { item: any }) => (
-    
-    <View style={styles.itemContainer}>
-      <View style={styles.detailsContainer}>
-      <Image source={{ uri: item.poster }} style={styles.poster} />
-        <Text style={styles.title}>{item.name}</Text>
-        {/* <Text style={styles.description}>{item.description}</Text> */}
-        <Text style={styles.info}>Episodes: {item.episodes.sub} sub, {item.episodes.dub} dub</Text>
-        <Text style={styles.info}>Release Date: {item.otherInfo[2]}</Text>
+<TouchableOpacity onPress={() => console.log(item.id)}>
+      <View style={styles.itemContainer}>
+        <View style={styles.detailsContainer}>
+          <Image source={{ uri: item.poster }} style={styles.poster} />
+          <Text style={styles.title}>{item.name}</Text>
+          <Text style={styles.info}>Episodes: {item.episodes.sub} sub, {item.episodes.dub} dub</Text>
+          <Text style={styles.info}>Release Date: {item.otherInfo[2]}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
