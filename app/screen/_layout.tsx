@@ -26,9 +26,9 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/ani" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
@@ -47,14 +47,14 @@ export default function TabLayout() {
         name="search"
         options={{
           title: 'Search',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
         }}
       />
       <Tabs.Screen
         name="two"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="user-circle" color={color} />,
         }}
       />
     </Tabs>
