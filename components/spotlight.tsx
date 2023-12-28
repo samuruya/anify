@@ -3,7 +3,7 @@ import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity }
 // import Carousel from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native';
 import data from './spotlightData.json';
-import { withLayoutContext } from 'expo-router';
+import { Link, withLayoutContext } from 'expo-router';
 
 const windowWidth = Dimensions.get('window').width;
 // const navigation = useNavigation();
@@ -23,9 +23,10 @@ export default function Spotlight() {
   //   };
   //   fetchData();
   // }, []);
-
+  const navigation = useNavigation();
+  const txt = "tt"
   const renderItem = ({ item }: { item: any }) => (
-<TouchableOpacity onPress={() => console.log(item.id)}>
+<TouchableOpacity onPress={() => navigation.navigate('animeInfo', { id: item.id })}>
       <View style={styles.itemContainer}>
         <View style={styles.detailsContainer}>
           <Image source={{ uri: item.poster }} style={styles.poster} />
@@ -45,15 +46,15 @@ export default function Spotlight() {
     //   itemWidth={300}
     // />
     <View>
-    <Text style={styles.label}>Spotlight</Text>
-    <FlatList
-      data={data.spotlightAnimes}
-      renderItem={renderItem}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      pagingEnabled
-      bounces={true}
-    />
+      <Text style={styles.label}>Spotlight</Text>
+      <FlatList
+        data={data.spotlightAnimes}
+        renderItem={renderItem} 
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        pagingEnabled
+        bounces={true}
+      />
     </View>
   );
 }

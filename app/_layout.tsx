@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import { createStackNavigator, StackNavigationOptions, } from '@react-navigation/stack';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,6 +51,7 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="screen" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="animeInfo" options={{ presentation: 'modal' }} />
       </Stack>
     </ThemeProvider>
   );
