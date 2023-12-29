@@ -23,19 +23,19 @@ export default function Spotlight() {
   //   };
   //   fetchData();
   // }, []);
+
   const navigation = useNavigation();
-  const txt = "tt"
   const renderItem = ({ item }: { item: any }) => (
-<TouchableOpacity onPress={() => navigation.navigate('animeInfo', { id: item.id })}>
-      <View style={styles.itemContainer}>
-        <View style={styles.detailsContainer}>
-          <Image source={{ uri: item.poster }} style={styles.poster} />
-          <Text style={styles.title}>{item.name}</Text>
-          <Text style={styles.info}>Episodes: {item.episodes.sub} sub, {item.episodes.dub} dub</Text>
-          <Text style={styles.info}>Release Date: {item.otherInfo[2]}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate('animeInfo', { id: item.id })}>
+          <View style={styles.itemContainer}>
+            <View style={styles.detailsContainer}>
+              <Image source={{ uri: item.poster }} style={styles.poster} />
+              <Text style={styles.title}>{item.name}</Text>
+              <Text style={styles.info}>Episodes: {item.episodes.sub} sub, {item.episodes.dub} dub</Text>
+              <Text style={styles.info}>Release Date: {item.otherInfo[2]}</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
   );
 
   return (
@@ -48,7 +48,7 @@ export default function Spotlight() {
     <View>
       <Text style={styles.label}>Spotlight</Text>
       <FlatList
-        data={data.spotlightAnimes}
+        data={data?.spotlightAnimes}
         renderItem={renderItem} 
         horizontal
         showsHorizontalScrollIndicator={false}
