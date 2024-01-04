@@ -4,7 +4,7 @@ import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity } f
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import data from './info.json'
+import data from '../assets/json-data/animeinfo.json'
 
 interface AnimeInfoProps {
   route: { params: { id: string } };

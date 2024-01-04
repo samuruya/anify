@@ -6,7 +6,7 @@ import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { BlurView } from '@react-native-community/blur';
-// import data from '../search.json'
+// import data from '../assets/json-data/search.json'
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -16,7 +16,7 @@ export default function SearchScreen() {
   const [data, setData] = useState([]);
 
    const search = async (query) => {
-    console.log("search >", query);
+    console.log("search:", query);
   
       const fetchData = async () => {
         try {

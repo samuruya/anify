@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 // import Carousel from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native';
-import data from './spotlightData.json';
+import data from '../assets/json-data/spotlightData.json';
 import { Link, withLayoutContext } from 'expo-router';
 
 const windowWidth = Dimensions.get('window').width;
