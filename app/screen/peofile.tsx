@@ -9,9 +9,9 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Link href="/modal" asChild>
+      {/* <Link href="/modal" asChild>
              <Text>Click here</Text>
-        </Link>
+        </Link> */}
       {/* <EditScreenInfo path="app/screen/two.tsx" /> */}
     </View>
   );

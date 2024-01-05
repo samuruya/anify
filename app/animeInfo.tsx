@@ -6,6 +6,7 @@ import { Text, View } from '../components/Themed';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import data from '../assets/json-data/animeinfo.json'
+import episodeData from '../assets/json-data/episodeData.json'
 
 interface AnimeInfoProps {
   route: { params: { id: string } };
@@ -21,19 +22,31 @@ export default function AnimeInfo() {
   
   
   // const [data, setData] = useState([]);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const resp = await fetch(`https://api-aniwatch.onrender.com/anime/info?id=${id}`);
-  //       const jsonData = await resp.json();
-  //       setData(jsonData);
-  //       console.log(fetchIP);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
+  // const [episodeData, setEpisodeData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resp = await fetch(`https://api-aniwatch.onrender.com/anime/info?id=${id}`);
+        const jsonData = await resp.json();
+        setData(jsonData);
+        console.log(fetchIP);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+      const fetchEpisodes = async () => {
+      try {
+        const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episodes/${id}`);
+        const jsonData = await resp.json();
+        setEpisodeData(jsonData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    // fetchData();
+    //fetchEpisodes();
+  }, []);
 
   async function updateInfo(id){
     try {
@@ -74,6 +87,21 @@ export default function AnimeInfo() {
           </View>
         ))}
       </ScrollView>
+
+      {/* Render Episodes */}
+      {episodeData.episodes?.map((episode) => (
+          <View key={episode.episodeId} style={styles.episodeContainer}>
+            <TouchableOpacity onPress={() => console.log('play', episode.episodeId) }>
+              <View style={styles.innerContainer}>
+                <Image source={{ uri: data.anime.info.poster }} style={styles.episodeImg } />
+                <View style={styles.overlayContainer}>
+                  <FontAwesome name="play-circle" size={40} color='#777' style={{ zIndex: 1 }} />
+                </View>
+                <Text style={styles.episodeText }>{episode.number}. {episode.title}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        ))}
 
       {/* Render most popular animes */}
       <Text style={styles.subtitle}>Most Popular Animes:</Text>
@@ -222,19 +250,48 @@ const styles = StyleSheet.create({
     color: '#ffdd95', 
   },
   seasonScrollContainer: {
-    flexDirection: 'row', // Horizontal layout
-    justifyContent: 'center', // Center items horizontally
+    flexDirection: 'row', 
+    justifyContent: 'center',
   },
   line: {
     position: 'absolute',
     top: 0,
-    // left: 0,
-    // right: 0,
     height: 5, 
     width: 50,
     backgroundColor: 'rgba(119, 119, 119, 0.9)', 
     borderRadius: 5, 
     margin: 5,
     zIndex: 1000,
+  },
+
+  episodeContainer: {
+    width: '100%',
+    margin: 5,
+    paddingLeft: 20,
+    // backgroundColor: 'grey',
+  },
+  innerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+  },
+  episodeText: {
+    flex: 1, 
+    marginLeft: 10,
+  },
+  episodeImg: {
+    width: 100,
+    height: 60,
+    resizeMode: 'cover',
+    borderRadius: 5,
+  },
+  overlayContainer: {
+    position: 'absolute',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    left: 34,
+    backgroundColor: 'transparent',
   },
 });
