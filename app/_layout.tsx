@@ -3,7 +3,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { Platform, useColorScheme } from 'react-native';
 import { createStackNavigator, StackNavigationOptions, } from '@react-navigation/stack';
 
 export {
@@ -51,7 +51,7 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="screen" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="animeInfo" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' ? false : true }} />
       </Stack>
     </ThemeProvider>
   );
