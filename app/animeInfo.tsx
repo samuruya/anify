@@ -8,9 +8,6 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import data from '../assets/json-data/animeinfo.json'
 import episodeData from '../assets/json-data/episodeData.json'
 
-interface AnimeInfoProps {
-  route: { params: { id: string } };
-}
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -18,7 +15,7 @@ export default function AnimeInfo() {
   const navigation = useNavigation();
   const route = useRoute();
   const id = route.params.id;
-  // console.log('ID',id);
+  console.log('ID',id);
   
   
   // const [data, setData] = useState([]);
@@ -29,7 +26,6 @@ export default function AnimeInfo() {
         const resp = await fetch(`https://api-aniwatch.onrender.com/anime/info?id=${id}`);
         const jsonData = await resp.json();
         setData(jsonData);
-        console.log(fetchIP);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -57,6 +53,17 @@ export default function AnimeInfo() {
       console.error("Error fetching data:", error);
     }
   }
+
+  // async function playVideo(episodeId){
+  //   try {
+  //     const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
+  //     const jsonData = await resp.json();
+  //     const url = jsonData.sources[0].url
+  //     navigation.navigate('player3', { url: url })
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // }
   
 
   return (
@@ -91,7 +98,7 @@ export default function AnimeInfo() {
       {/* Render Episodes */}
       {episodeData.episodes?.map((episode) => (
           <View key={episode.episodeId} style={styles.episodeContainer}>
-            <TouchableOpacity onPress={() => console.log('play', episode.episodeId) }>
+            <TouchableOpacity onPress={() => navigation.navigate('player3', { episodeId: episode.episodeId }) }>
               <View style={styles.innerContainer}>
                 <Image source={{ uri: data.anime.info.poster }} style={styles.episodeImg } />
                 <View style={styles.overlayContainer}>
