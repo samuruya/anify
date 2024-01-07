@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { Video, ResizeMode } from 'expo-av';
+import { Video, Audio, ResizeMode } from 'expo-av';
 import Loading from '../components/loading';
 
 export default function Player() {
@@ -18,6 +18,7 @@ export default function Player() {
 
   useEffect(() => {
     async function playVideo(episodeId){
+      Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
       try {
         const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
         const jsonData = await resp.json();
@@ -39,8 +40,6 @@ export default function Player() {
     }
   };
 
-  
-  
   return (
     <View style={styles.container}>
       <Video
