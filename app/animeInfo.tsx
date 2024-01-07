@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { getWatchProgressSeason, getWatchProgressMovie, getContinueWatching, } from './db'
 import data from '../assets/json-data/animeinfo.json'
 import episodeData from '../assets/json-data/episodeData.json'
 
@@ -54,6 +55,10 @@ export default function AnimeInfo() {
     }
   }
 
+  function playCurrent(prop){
+    getWatchProgressSeason(data.anime?.info.id)
+  }
+
   // async function playVideo(episodeId){
   //   try {
   //     const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
@@ -72,6 +77,7 @@ export default function AnimeInfo() {
       {Platform.OS === 'ios' && <View style={styles.line} />}
       <Image source={{ uri: data.anime?.info.poster }} style={styles.mainPoster} />
       <Text style={styles.title}>{data.anime?.info.name}</Text>
+      <Button title="Play" onPress={() => playCurrent("Var ?")} />
       <Text style={styles.description}>{data.anime?.info.description}</Text>
       
       {/* Render seasons */}

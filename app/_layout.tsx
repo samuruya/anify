@@ -50,7 +50,7 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="screen" options={{ headerShown: false }} />
-        <Stack.Screen name="player3" options={{ animation: 'none', headerShown: false }} />
+        <Stack.Screen name="player3" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' ? false : true }} />
       </Stack>
