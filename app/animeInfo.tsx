@@ -1,46 +1,28 @@
 import React, {useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button } from 'react-native';
+import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button, Pressable } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
-import { useRoute, useNavigation } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { getWatchProgressSeason, getWatchProgressMovie, getContinueWatching, } from './db'
 import data from '../assets/json-data/animeinfo.json'
 import episodeData from '../assets/json-data/episodeData.json'
+import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 
 
 const windowWidth = Dimensions.get('window').width;
 
 export default function AnimeInfo() {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const id = route.params.id;
-  console.log('ID',id);
-  
+  const router = useRouter();
+  const { id } = useLocalSearchParams();
   
   // const [data, setData] = useState([]);
   // const [episodeData, setEpisodeData] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resp = await fetch(`https://api-aniwatch.onrender.com/anime/info?id=${id}`);
-        const jsonData = await resp.json();
-        setData(jsonData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-      const fetchEpisodes = async () => {
-      try {
-        const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episodes/${id}`);
-        const jsonData = await resp.json();
-        setEpisodeData(jsonData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  const [continueWatchingTime, setContinueWatchingTime] = useState([]);
   
+  useEffect(() => {
+    console.log('ID!!',id);
+    continueWatching()
     // fetchData();
     //fetchEpisodes();
   }, []);
@@ -55,8 +37,44 @@ export default function AnimeInfo() {
     }
   }
 
-  function playCurrent(prop){
-    getWatchProgressSeason(data.anime?.info.id)
+  const fetchData = async () => {
+    try {
+      const resp = await fetch(`https://api-aniwatch.onrender.com/anime/info?id=${id}`);
+      const jsonData = await resp.json();
+      setData(jsonData);
+      continueWatching()
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+    const fetchEpisodes = async () => {
+    try {
+      const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episodes/${id}`);
+      const jsonData = await resp.json();
+      setEpisodeData(jsonData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  function playCurrent(){
+    console.log(continueWatchingTime.id, continueWatchingTime.time);
+    router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.id, playStartTime: continueWatchingTime.time } })
+  }
+
+  async function continueWatching(){
+    // var time = await getContinueWatching(data.anime?.info.id)
+    setContinueWatchingTime( await getContinueWatching(data.anime?.info.id) )
+    if (continueWatchingTime){
+      console.log("time: not NULL", continueWatchingTime);
+      
+    }else{
+      console.log("time: NULL");
+    }
+  }
+
+  async function getEpisodeProgress(episodeId){
+    await getWatchProgressSeason(episodeId)
   }
 
   // async function playVideo(episodeId){
@@ -64,7 +82,7 @@ export default function AnimeInfo() {
   //     const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
   //     const jsonData = await resp.json();
   //     const url = jsonData.sources[0].url
-  //     navigation.navigate('player3', { url: url })
+  //     router.push({ pathname: "/player3", params: { url: url } })
   //   } catch (error) {
   //     console.error("Error fetching data:", error);
   //   }
@@ -104,13 +122,15 @@ export default function AnimeInfo() {
       {/* Render Episodes */}
       {episodeData.episodes?.map((episode) => (
           <View key={episode.episodeId} style={styles.episodeContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('player3', { episodeId: episode.episodeId }) }>
+           
+            <TouchableOpacity onPress={() =>  router.push({ pathname: "/player3", params: { episodeId: episode.episodeId } }) }>
               <View style={styles.innerContainer}>
                 <Image source={{ uri: data.anime.info.poster }} style={styles.episodeImg } />
                 <View style={styles.overlayContainer}>
                   <FontAwesome name="play-circle" size={40} color='#777' style={{ zIndex: 1 }} />
                 </View>
                 <Text style={styles.episodeText }>{episode.number}. {episode.title}</Text>
+                
               </View>
             </TouchableOpacity>
           </View>
@@ -128,7 +148,7 @@ export default function AnimeInfo() {
       <FlatList
       data={data.mostPopularAnimes}
       renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => navigation.navigate('animeInfo', { id: item.id })}>
+        <TouchableOpacity onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
         <View style={styles.flatlist} key={item.id}>
           <Image source={{ uri: item.poster }} style={styles.poster} />
           {/* <Text>{item.name}</Text> */}
@@ -140,29 +160,31 @@ export default function AnimeInfo() {
       // pagingEnabled
       bounces={true}
     />
-    {/* Render related Animes */}
-    <Text style={styles.subtitle}>Related Animes:</Text>
+
+      {/* Render related Animes */}
+      <Text style={styles.subtitle}>Related Animes:</Text>
     <FlatList
       data={data.relatedAnimes}
       renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => navigation.navigate('animeInfo', { id: item.id })}>
+        <Pressable onPress={() => router.push({ pathname: "/modal", params: { id: item.id } }) }>
         <View style={styles.flatlist} key={item.id}>
           <Image source={{ uri: item.poster }} style={styles.poster} />
           {/* <Text>{item.name}</Text> */}
         </View>
-        </TouchableOpacity>
+        </Pressable>
       )}
       horizontal
       showsHorizontalScrollIndicator={false}
       // pagingEnabled
       bounces={true}
     />
+
     {/* Render recommended Animes	 */}
     <Text style={styles.subtitle}>Recommended Animes:</Text>
     <FlatList
       data={data.recommendedAnimes}
       renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => navigation.navigate('animeInfo', { id: item.id })}>
+        <TouchableOpacity onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
         <View style={styles.flatlist} key={item.id}>
           <Image source={{ uri: item.poster }} style={styles.poster} />
           {/* <Text>{item.name}</Text> */}

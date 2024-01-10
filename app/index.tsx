@@ -14,12 +14,12 @@ export default function StartScreen() {
     // return <Redirect href="/screen/profile" />
 }
 
-//DB_Stuff
+// DB_Stuff
 // const adapter = new SQLiteAdapter({
 //     schema,
 //     migrations,
 //     // dbName: 'database',
-//     jsi: true, /* Platform.OS === 'ios' */
+//     jsi: false, /* Platform.OS === 'ios' */
    
 //     onSetUpError: error => {
 //         console.error(error)

@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
 import { Video, Audio, ResizeMode } from 'expo-av';
+import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import Loading from '../components/loading';
 
 export default function Player() {
-  const route = useRoute();
-  const episodeId = route.params.episodeId;
-  // const url = route.params.url;
+  const router = useRouter();
+  const { episodeId,  playStartTime } = useLocalSearchParams();
+  console.log("playtime",playStartTime);
+
   // const url = 'https://live-par-2-cdn-alt.livepush.io/live/bigbuckbunnyclip/index.m3u8'
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
   const [url, setUlr] = useState([]);
   const [isReady, setIsReady] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  const navigation = useNavigation();
 
   useEffect(() => {
     async function playVideo(episodeId){
@@ -23,10 +23,11 @@ export default function Player() {
         const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
         const jsonData = await resp.json();
         setUlr(jsonData.sources[0].url)
-        console.log("doen Fetching URL");
+        console.log("done Fetching URL");
+        
       } catch (error) {
         console.error("Error fetching data:", error);
-        navigation.goBack()
+        router.back()
       }
     }
     playVideo(episodeId)
@@ -61,7 +62,7 @@ export default function Player() {
         }}
         onFullscreenUpdate={(e)=>{
           if (e.fullscreenUpdate === 3) {
-            navigation.goBack()
+            router.back()
           }
         }}
       />

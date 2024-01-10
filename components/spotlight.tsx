@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity, Pressable } from 'react-native';
 // import Carousel from 'react-native-snap-carousel';
-import { useNavigation } from '@react-navigation/native';
 import data from '../assets/json-data/spotlightData.json';
-import { Link, withLayoutContext } from 'expo-router';
+import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 
 const windowWidth = Dimensions.get('window').width;
-// const navigation = useNavigation();
+
 
 export default function Spotlight() {
-
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  
   // const [data, setData] = useState([]);
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -24,9 +25,10 @@ export default function Spotlight() {
   //   fetchData();
   // }, []);
 
-  const navigation = useNavigation();
+
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('animeInfo', { id: item.id })}>
+    <Link href={{ pathname: "/animeInfo", params: { id: item.id } }} asChild>
+    <Pressable>
           <View style={styles.itemContainer}>
             <View style={styles.detailsContainer}>
               <Image source={{ uri: item.poster }} style={styles.poster} />
@@ -35,7 +37,8 @@ export default function Spotlight() {
               <Text style={styles.info}>Release Date: {item.otherInfo[2]}</Text>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
+        </Link>
   );
 
   return (

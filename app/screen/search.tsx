@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, TextInput, Dimensions, Image, TouchableOpacity, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
+import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -13,6 +12,7 @@ const windowWidth = Dimensions.get('window').width;
 
 
 export default function SearchScreen() {
+  const router = useRouter();
   const [data, setData] = useState([]);
 
    const search = async (query) => {
@@ -30,11 +30,11 @@ export default function SearchScreen() {
       fetchData();
   }
 
-  const navigation = useNavigation();
+
   const renderItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       // style={styles.itemContainer}
-      onPress={() => navigation.navigate('animeInfo', { id: item.id })}
+      onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } })}
     >
       <Image source={{ uri: item.poster }} style={styles.poster} />
     </TouchableOpacity>

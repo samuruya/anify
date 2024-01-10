@@ -4,7 +4,6 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { Platform, useColorScheme } from 'react-native';
-import { createStackNavigator, StackNavigationOptions, } from '@react-navigation/stack';
 
 export {
   // Catch any errors thrown by the Layout component.
