@@ -11,6 +11,7 @@ import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 
 
 const windowWidth = Dimensions.get('window').width;
+const overlayContainerTopWidth = 100;
 
 export default function AnimeInfo() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function AnimeInfo() {
   const [continueWatchingTime, setContinueWatchingTime] = useState([]);
   
   useEffect(() => {
-    console.log('ID!!',id);
+    console.log('Passed ID', id);
     continueWatching()
     // fetchData();
     //fetchEpisodes();
@@ -73,8 +74,8 @@ export default function AnimeInfo() {
     }
   }
 
-  async function getEpisodeProgress(episodeId){
-    await getWatchProgressSeason(episodeId)
+  function getEpisodeProgress(episodeId){
+    return getWatchProgressSeason(episodeId)
   }
 
   // async function playVideo(episodeId){
@@ -120,21 +121,31 @@ export default function AnimeInfo() {
       </ScrollView>
 
       {/* Render Episodes */}
-      {episodeData.episodes?.map((episode) => (
+      {episodeData.episodes?.map((episode) => {
+         const res = getWatchProgressSeason(episode.episodeId);
+
+         return (
           <View key={episode.episodeId} style={styles.episodeContainer}>
-           
             <TouchableOpacity onPress={() =>  router.push({ pathname: "/player3", params: { episodeId: episode.episodeId } }) }>
               <View style={styles.innerContainer}>
-                <Image source={{ uri: data.anime.info.poster }} style={styles.episodeImg } />
-                <View style={styles.overlayContainer}>
-                  <FontAwesome name="play-circle" size={40} color='#777' style={{ zIndex: 1 }} />
+                <View style={styles.overlayContainerTop}>
+                  <Image source={{ uri: data.anime.info.poster }} style={styles.episodeImg } />
+                    <View style={styles.overlayContainer}>
+                      <FontAwesome name="play-circle" size={40} color='#777' style={{ zIndex: 1 }} />
+                    </View>
+                    {res ? (
+                      <View>
+                        <View style={styles.progressLineFull} />
+                        <View style={[styles.progressLine, { width: (res.time / res.length) * overlayContainerTopWidth }]} />
+                      </View>
+                    ) : null}
                 </View>
                 <Text style={styles.episodeText }>{episode.number}. {episode.title}</Text>
-                
               </View>
             </TouchableOpacity>
           </View>
-        ))}
+        );  
+      })}
 
       {/* Render most popular animes */}
       <Text style={styles.subtitle}>Most Popular Animes:</Text>
@@ -316,17 +327,37 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   episodeImg: {
-    width: 100,
-    height: 60,
+    width: '100%',
+    height: '100%',
     resizeMode: 'cover',
-    borderRadius: 5,
   },
   overlayContainer: {
+    height: '100%',
     position: 'absolute',
     alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-    left: 34,
     backgroundColor: 'transparent',
+  },
+  progressLineFull: {
+    position: 'absolute',
+    bottom: 0,
+    height: 3, 
+    width: '100%',
+    backgroundColor: 'rgba(119, 119, 119, 0.9)', 
+  },
+  progressLine: {
+    position: 'absolute',
+    bottom: 0,
+    height: 3, 
+    width: 20,
+    backgroundColor: 'rgba(194, 61, 52, 0.9)', 
+    borderRadius: 5, 
+    zIndex: 1,
+  },
+  overlayContainerTop: {
+    width: overlayContainerTopWidth,
+    height: 60,
+    overflow: 'hidden',
+    borderRadius: 5,
   },
 });
