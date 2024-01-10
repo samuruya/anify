@@ -7,7 +7,8 @@ import Loading from '../components/loading';
 export default function Player() {
   const router = useRouter();
   const { episodeId,  playStartTime } = useLocalSearchParams();
-  console.log("playtime",playStartTime);
+  var timeNumber;
+  
 
   // const url = 'https://live-par-2-cdn-alt.livepush.io/live/bigbuckbunnyclip/index.m3u8'
   const video = React.useRef(null);
@@ -24,11 +25,16 @@ export default function Player() {
         const jsonData = await resp.json();
         setUlr(jsonData.sources[0].url)
         console.log("done Fetching URL");
-        
+         console.log("playtime",playStartTime);
       } catch (error) {
         console.error("Error fetching data:", error);
         router.back()
       }
+    }
+    if(playStartTime){
+      timeNumber = parseFloat(playStartTime) * 60 * 1000;
+    }else{
+      timeNumber = 0;
     }
     playVideo(episodeId)
  
@@ -53,6 +59,7 @@ export default function Player() {
         resizeMode={ResizeMode.CONTAIN}
         shouldPlay
         isMuted={false}
+        positionMillis={timeNumber}
         onPlaybackStatusUpdate={(newStatus) => {
           setStatus(() => newStatus);
           if (!isReady && newStatus.isLoaded) {

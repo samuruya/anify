@@ -19,14 +19,33 @@ export default function AnimeInfo() {
   
   // const [data, setData] = useState([]);
   // const [episodeData, setEpisodeData] = useState([]);
-  const [continueWatchingTime, setContinueWatchingTime] = useState([]);
-  
+  const [continueWatchingTime, setContinueWatchingTime] = useState({});
+ 
   useEffect(() => {
     console.log('Passed ID', id);
-    continueWatching()
+
     // fetchData();
     //fetchEpisodes();
   }, []);
+
+  useEffect(() => {
+    const continueWatching = async () => {
+      const time = await getContinueWatching(data.anime?.info.id);
+  
+      if (time) {
+        console.log('time: not NULL', time);
+        const find = episodeData.episodes.find((episode) => episode.episodeId === time.id);
+        const res = { timeInfo: time, episodeInfo: find }; 
+        setContinueWatchingTime(res);
+      } else {
+        setContinueWatchingTime(null);
+        console.log('time: NULL');
+      }
+    };
+  
+    continueWatching()
+    
+  }, [data.anime?.info.id, episodeData.episodes]);
 
   async function updateInfo(id){
     try {
@@ -59,24 +78,23 @@ export default function AnimeInfo() {
   };
 
   function playCurrent(){
-    console.log(continueWatchingTime.id, continueWatchingTime.time);
-    router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.id, playStartTime: continueWatchingTime.time } })
+    console.log(continueWatchingTime.timeInfo.id, continueWatchingTime.timeInfo.time);
+    router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.timeInfo.id, playStartTime: continueWatchingTime.timeInfo.time } })
   }
 
-  async function continueWatching(){
-    // var time = await getContinueWatching(data.anime?.info.id)
-    setContinueWatchingTime( await getContinueWatching(data.anime?.info.id) )
-    if (continueWatchingTime){
-      console.log("time: not NULL", continueWatchingTime);
-      
-    }else{
-      console.log("time: NULL");
-    }
-  }
 
   function getEpisodeProgress(episodeId){
     return getWatchProgressSeason(episodeId)
   }
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleText = () => {
+    setIsExpanded(!isExpanded);
+  };
+  const words = data.anime?.info.description.split(' ');
+  const truncatedText = isExpanded ? data.anime?.info.description : words.slice(0, 20).join(' ') + '...';
+
 
   // async function playVideo(episodeId){
   //   try {
@@ -96,9 +114,38 @@ export default function AnimeInfo() {
       {Platform.OS === 'ios' && <View style={styles.line} />}
       <Image source={{ uri: data.anime?.info.poster }} style={styles.mainPoster} />
       <Text style={styles.title}>{data.anime?.info.name}</Text>
-      <Button title="Play" onPress={() => playCurrent("Var ?")} />
-      <Text style={styles.description}>{data.anime?.info.description}</Text>
       
+      {continueWatchingTime ? (
+        <>
+        <View>
+            <TouchableOpacity style={styles.playButton} onPress={() => playCurrent()}>
+                <Text style={styles.playButtonText}>Resume</Text>
+            </TouchableOpacity>
+          </View>
+        
+          {/* <Button title="Continue" onPress={() => playCurrent()} /> */}
+          {continueWatchingTime.episodeInfo && (
+            <Text style={styles.description2}>E{continueWatchingTime.episodeInfo.number}: {continueWatchingTime.episodeInfo.title}</Text>
+          )}
+          <View style={styles.continueContainer}>
+            <View style={styles.progressLineFull} />
+            {continueWatchingTime.timeInfo && (
+              <View style={[ styles.progressLine, { width: (continueWatchingTime.timeInfo.time / continueWatchingTime.timeInfo.length) * (windowWidth - 50) } ]} />
+            )}
+          </View>
+        </>
+      ) : (
+        <View>
+        <TouchableOpacity style={styles.playButton} onPress={() => playCurrent()}>
+            <Text style={styles.playButtonText}>Play</Text>
+        </TouchableOpacity>
+      </View>
+      )}
+  
+        <TouchableOpacity onPress={toggleText}>
+         <Text style={styles.description}>{truncatedText}</Text>
+        </TouchableOpacity>
+  
       {/* Render seasons */}
       <Text style={styles.subtitle}>Seasons:</Text>
       <ScrollView
@@ -241,9 +288,15 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    textAlign: 'center',
+    // textAlign: 'center',
     marginHorizontal: 20,
     marginBottom: 10,
+  },
+  description2: {
+    fontSize: 16,
+    alignSelf: 'flex-start',
+    marginLeft: 25,
+    // marginBottom: 10,
   },
   poster: {
     width: 100,
@@ -275,16 +328,12 @@ const styles = StyleSheet.create({
     borderColor: 'black',
   },
   seasonText: {
-    // fontFamily: '',
     position: 'absolute',
     width: '100%', 
     height: '100%',
-    top: 0,
-    left: 0,
     color: 'white', 
     fontSize: 13, 
     backgroundColor: 'rgba(0, 0, 0, 0.5)', 
-    padding: 1,
     textAlign: 'center',
     textAlignVertical:'center',
     borderRadius: 10,
@@ -349,7 +398,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     height: 3, 
-    width: 20,
+    width: 0,
     backgroundColor: 'rgba(194, 61, 52, 0.9)', 
     borderRadius: 5, 
     zIndex: 1,
@@ -359,5 +408,24 @@ const styles = StyleSheet.create({
     height: 60,
     overflow: 'hidden',
     borderRadius: 5,
+  },
+  continueContainer: {
+    width: windowWidth - 50,
+    height: 10,
+    overflow: 'hidden',
+    marginBottom: 20,
+    // borderRadius: 5,
+  },
+  playButton: {
+    backgroundColor: 'white',
+    width: windowWidth -150,
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 15,
+    marginBottom: 15,
+  },
+  playButtonText: {
+    color: 'black',
+    textAlign: 'center'
   },
 });

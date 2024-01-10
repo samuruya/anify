@@ -3,7 +3,7 @@
 
 export function getWatchProgressSeason(seasonId){
     // console.log("seasonId", seasonId);
-    var cwObj = {
+    const cwObj = {
         id: 'jujutsu-kaisen-2nd-season-18413?ep=103235',
         time: 14.43,
         length: 25.32
@@ -14,11 +14,11 @@ export async function getWatchProgressMovie(movieId){
     console.log("movieId", movieId);
 }
 export async function getContinueWatching(titleId){
-    console.log("titleId", titleId);
-    var cwObj = {
+    // console.log("titleId", titleId);
+    const cwObj = {
         id: 'jujutsu-kaisen-2nd-season-18413?ep=103235',
-        time: 14.43,
-        length: 25.32
+        time: 14.32,
+        length: 25.32,
     }
     return cwObj
 }
