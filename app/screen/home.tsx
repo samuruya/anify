@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: 50,
-    // zIndex: 1000,
+    zIndex: 1000,
   },
   conWatchPoster: {
     width: '100%',
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
     paddingBottom: 30,
-    zIndex: 1000,
+    zIndex: 100,
   },
   progressLineFull: {
     position: 'absolute',
