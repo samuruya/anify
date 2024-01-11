@@ -15,23 +15,3 @@ export default function StartScreen() {
 }
 
 // DB_Stuff
-// const adapter = new SQLiteAdapter({
-//     schema,
-//     migrations,
-//     // dbName: 'database',
-//     jsi: false, /* Platform.OS === 'ios' */
-   
-//     onSetUpError: error => {
-//         console.error(error)
-//       // Database failed to load -- offer the user to reload the app or log out
-//     }
-//   })
-  
-//   const database = new Database({
-//     adapter,
-//     modelClasses: [
-//       WatchProgressSeason,
-//       WatchProgressMovie,
-//       ContinueWatching
-//     ],
-//   })
