@@ -47,7 +47,7 @@ export default function TabOneScreen() {
       <Pressable>
           <View style={styles.itemContainer}>
             <View style={styles.detailsContainer}>
-              <Image source={{ uri: item.poster }} style={styles.poster} />
+              <Image source={{ uri: item.poster }} style={styles.spotlightPoster} />
               <Text style={styles.title}>{item.name}</Text>
               <Text style={styles.info}>Episodes: {item.episodes.sub} sub, {item.episodes.dub} dub</Text>
               <Text style={styles.info}>Release Date: {item.otherInfo[2]}</Text>
@@ -76,35 +76,123 @@ export default function TabOneScreen() {
           bounces={true}
         />
 
-        {/* Render related Animes */}
-      <Text style={styles.subtitle}>Continue Watching:</Text>
-      <FlatList
-        data={continueWatchingeItems}
-        renderItem={({ item }) => (
-          <Pressable onPress={() => router.push({ pathname: "/player3", params: { episodeId: item.id, playStartTime: item.time } }) }>
-            <View style={styles.flatlist} key={item.id}>
-              <View style={styles.conWatchingItemCon}>
-                <View style={styles.overlayContainer}>
-                        <FontAwesome name="play-circle" size={60} color='#777' />
-                  </View>
-                <Image source={{ uri: item.poster }} style={styles.conWatchPoster} />
-                  <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
-                    <BlurView intensity={10} style={styles.blurContainer} >
-                      <Text style={styles.description2}>E{item.number}: {item.title}</Text>
-                    </BlurView>
-                  </Pressable>
-                <View style={styles.progressLineFull} />
-                <View style={[styles.progressLine, { width: (item.time / item.length) * conWatchingItemConWith }]} />
+        {/* Render Contine Watching */}
+        <Text style={styles.subtitle}>Continue Watching:</Text>
+        <FlatList
+          data={continueWatchingeItems}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => router.push({ pathname: "/player3", params: { episodeId: item.id, playStartTime: item.time } }) }>
+              <View style={styles.flatlist} key={item.id}>
+                <View style={styles.conWatchingItemCon}>
+                  <View style={styles.overlayContainer}>
+                          <FontAwesome name="play-circle" size={60} color='#777' />
+                    </View>
+                  <Image source={{ uri: item.poster }} style={styles.conWatchPoster} />
+                    <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
+                      <BlurView intensity={10} style={styles.blurContainer} >
+                        <Text style={styles.description2}>E{item.number}: {item.title}</Text>
+                      </BlurView>
+                    </Pressable>
+                  <View style={styles.progressLineFull} />
+                  <View style={[styles.progressLine, { width: (item.time / item.length) * conWatchingItemConWith }]} />
+                </View>
+                {/* <Text>{item.name}</Text> */}
               </View>
+            </Pressable>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          // pagingEnabled
+          bounces={true}
+        />
+
+        {/* Render trending Animes */}
+        <Text style={styles.subtitle}>Trending Animes:</Text>
+        <FlatList
+          data={data.trendingAnimes}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
+            <View style={styles.flatlist} key={item.id}>
+              <Image source={{ uri: item.poster }} style={styles.poster} />
               {/* <Text>{item.name}</Text> */}
             </View>
-          </Pressable>
-        )}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        // pagingEnabled
-        bounces={true}
-      />
+            </Pressable>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          // pagingEnabled
+          bounces={true}
+        />
+        {/* Render latest Episode Animes */}
+        <Text style={styles.subtitle}>latest Episodes:</Text>
+        <FlatList
+          data={data.latestEpisodeAnimes}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
+            <View style={styles.flatlist} key={item.id}>
+              <Image source={{ uri: item.poster }} style={styles.poster} />
+              {/* <Text>{item.name}</Text> */}
+            </View>
+            </Pressable>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          // pagingEnabled
+          bounces={true}
+        />
+        {/* Render topUpcoming Animes */}
+        <Text style={styles.subtitle}>top Upcoming Animes:</Text>
+        <FlatList
+          data={data.topUpcomingAnimes}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
+            <View style={styles.flatlist} key={item.id}>
+              <Image source={{ uri: item.poster }} style={styles.poster} />
+              {/* <Text>{item.name}</Text> */}
+            </View>
+            </Pressable>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          // pagingEnabled
+          bounces={true}
+        />
+        {/* Render top10 Animes */}
+        <Text style={styles.subtitle}>top 10 Animes:</Text>
+        <FlatList
+          data={data.top10Animes.today}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
+            <View style={styles.flatlist} key={item.id}>
+              <Image source={{ uri: item.poster }} style={styles.poster} />
+              {/* <Text>{item.name}</Text> */}
+            </View>
+            </Pressable>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          // pagingEnabled
+          bounces={true}
+        />
+        {/* Render topAiring Animes */}
+        <Text style={styles.subtitle}>top Airing Animes:</Text>
+        <FlatList
+          data={data.topAiringAnimes}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
+            <View style={styles.flatlist} key={item.id}>
+              <Image source={{ uri: item.poster }} style={styles.poster} />
+              {/* <Text>{item.name}</Text> */}
+            </View>
+            </Pressable>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          // pagingEnabled
+          bounces={true}
+        />
+
+        
         
       </View>
     </ScrollView>
@@ -125,7 +213,7 @@ const styles = StyleSheet.create({
     height: 300,
     width: windowWidth,
   },
-  poster: {
+  spotlightPoster: {
     width: 350,
     height: 200,
   },
@@ -160,6 +248,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 10,
+    color: 'white',
+  },
+  poster: {
+    width: 100,
+    height: 150,
+    marginVertical: 10,
+    borderRadius: 10,
   },
   flatlist: {
     margin: 10,

@@ -221,21 +221,21 @@ export default function AnimeInfo() {
 
       {/* Render related Animes */}
       <Text style={styles.subtitle}>Related Animes:</Text>
-    <FlatList
-      data={data.relatedAnimes}
-      renderItem={({ item }) => (
-        <Pressable onPress={() => router.push({ pathname: "/modal", params: { id: item.id } }) }>
-        <View style={styles.flatlist} key={item.id}>
-          <Image source={{ uri: item.poster }} style={styles.poster} />
-          {/* <Text>{item.name}</Text> */}
-        </View>
-        </Pressable>
-      )}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      // pagingEnabled
-      bounces={true}
-    />
+      <FlatList
+        data={data.relatedAnimes}
+        renderItem={({ item }) => (
+          <Pressable onPress={() => router.push({ pathname: "/modal", params: { id: item.id } }) }>
+          <View style={styles.flatlist} key={item.id}>
+            <Image source={{ uri: item.poster }} style={styles.poster} />
+            {/* <Text>{item.name}</Text> */}
+          </View>
+          </Pressable>
+        )}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        // pagingEnabled
+        bounces={true}
+      />
 
     {/* Render recommended Animes	 */}
     <Text style={styles.subtitle}>Recommended Animes:</Text>
