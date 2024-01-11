@@ -7,8 +7,6 @@ import Loading from '../components/loading';
 export default function Player() {
   const router = useRouter();
   const { episodeId,  playStartTime } = useLocalSearchParams();
-  var timeNumber;
-  
 
   // const url = 'https://live-par-2-cdn-alt.livepush.io/live/bigbuckbunnyclip/index.m3u8'
   const video = React.useRef(null);
@@ -18,24 +16,20 @@ export default function Player() {
   const [isLoading, setIsLoading] = React.useState(true);
 
   useEffect(() => {
+    Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
     async function playVideo(episodeId){
-      Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
       try {
         const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
         const jsonData = await resp.json();
         setUlr(jsonData.sources[0].url)
-        console.log("done Fetching URL");
+        console.log("done Fetching URL", jsonData.sources[0].url);
          console.log("playtime",playStartTime);
       } catch (error) {
         console.error("Error fetching data:", error);
         router.back()
       }
     }
-    if(playStartTime){
-      timeNumber = parseFloat(playStartTime) * 60 * 1000;
-    }else{
-      timeNumber = 0;
-    }
+
     playVideo(episodeId)
  
   }, []);
@@ -59,7 +53,7 @@ export default function Player() {
         resizeMode={ResizeMode.CONTAIN}
         shouldPlay
         isMuted={false}
-        positionMillis={timeNumber}
+        positionMillis={playStartTime ? parseFloat(playStartTime) * 60 * 1000 : 0}
         onPlaybackStatusUpdate={(newStatus) => {
           setStatus(() => newStatus);
           if (!isReady && newStatus.isLoaded) {

@@ -23,7 +23,7 @@ export default function AnimeInfo() {
  
   useEffect(() => {
     console.log('Passed ID', id);
-
+    
     // fetchData();
     //fetchEpisodes();
   }, []);
