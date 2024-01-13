@@ -4,7 +4,7 @@ import { WatchProgressSeason, ContinueWatching, WatchProgressMovie } from './rea
 
 
 export function setWatchProgressSeason(realm, episodeId, time, length){
-    const toUpdate = realm.objects(ContinueWatching).filtered('id == $0', titleId)[0]
+    const toUpdate = realm.objects(ContinueWatching).filtered('id == $0', episodeId)[0]
 
     if(toUpdate !== undefined) {
         console.info("Realm: Update");

@@ -26,7 +26,7 @@ export default function Player() {
         const jsonData = await resp.json();
         setUlr(jsonData.sources[0].url)
         console.log("done Fetching URL", jsonData.sources[0].url);
-         console.log("playtime",playStartTime);
+        //  console.log("playtime",playStartTime);
       } catch (error) {
         console.error("Error fetching data:", error);
         router.back()
@@ -66,11 +66,10 @@ export default function Player() {
         }}
         onFullscreenUpdate={(e)=>{
           if (e.fullscreenUpdate === 3) {
+            // console.log("realm-------->", titleId, episodeId, title, number, status.positionMillis, status.durationMillis, url, poster);
             setWatchProgressSeason(realm, episodeId, status.positionMillis, status.durationMillis)
-            console.log("realm-------->", titleId, episodeId, title, number, status.positionMillis, status.durationMillis, url, poster);
             setContinueWatching(realm, titleId, episodeId, title, parseInt(number), status.positionMillis, status.durationMillis, url, poster)
-            // console.log(status.positionMillis)
-            // console.log(status.durationMillis);
+  
             router.back()
           }
         }}
