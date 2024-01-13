@@ -54,7 +54,8 @@ function RootLayoutNav() {
             <Stack.Screen name="screen" options={{ headerShown: false }} />
             <Stack.Screen name="player3" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false, statusBarHidden: true }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' ? false : true }} />
+            <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: false }} />
+            {/* <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' ? false : true }} /> */}
           </Stack>
         </ThemeProvider>
      </RealmProvider>

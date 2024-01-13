@@ -14,15 +14,16 @@ import { useQuery, useRealm } from "@realm/react";
 const windowWidth = Dimensions.get('window').width;
 const overlayContainerTopWidth = 100;
 
-export default function AnimeInfoComp({ id }: { id: string }) {
+
+export default function AnimeInfoComp({ id, newComponent }: { id: string; newComponent: (id: string) => void }) {
   const router = useRouter();
 //   const { id } = useLocalSearchParams();
-  const idNoPass = 'jujutsu-kaisen-2nd-season-18413'
   const continueWatchingeItem = useQuery("ContinueWatching").filtered('id == $0',id)[0]
+  const [continueWatchingTime, setContinueWatchingTime] = useState({});
   
   const [data, setData] = useState([]);
   const [episodeData, setEpisodeData] = useState([]);
-  const [continueWatchingTime, setContinueWatchingTime] = useState({});
+
 
  
  
@@ -36,8 +37,8 @@ export default function AnimeInfoComp({ id }: { id: string }) {
   useEffect(() => {
     const continueWatching = async () => {
   
-      if (continueWatchingeItem !== undefined) {
-        const find = await episodeData.episodes.find((episode) => episode.episodeId === continueWatchingeItem.episodeId);
+      if (continueWatchingeItem !== undefined && episodeData.episodes) {
+        const find = episodeData.episodes.find((episode) => episode.episodeId === continueWatchingeItem.episodeId);
         const res = { timeInfo: continueWatchingeItem, episodeInfo: find }; 
         setContinueWatchingTime(res);
         console.log('time: not NULL:', continueWatchingeItem);
@@ -49,13 +50,17 @@ export default function AnimeInfoComp({ id }: { id: string }) {
   
     continueWatching()
     
-  }, [continueWatchingeItem]);
+  }, [continueWatchingeItem, episodeData]);
 
   async function updateInfo(id){
     try {
       const resp = await fetch(`https://api-aniwatch.onrender.com/anime/info?id=${id}`);
       const jsonData = await resp.json();
       setData(jsonData);
+
+      const respEpisodes = await fetch(`https://api-aniwatch.onrender.com/anime/episodes/${id}`);
+      const jsonDataEpisodes = await respEpisodes.json();
+      setEpisodeData(jsonDataEpisodes);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -97,9 +102,6 @@ export default function AnimeInfoComp({ id }: { id: string }) {
     return Math.random().toString(36).substr(2, 9);
   };
 
-  function getEpisodeProgress(episodeId){
-    return getWatchProgressSeason(episodeId)
-  }
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -126,6 +128,7 @@ export default function AnimeInfoComp({ id }: { id: string }) {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
     <View style={styles.container}>
       {Platform.OS === 'ios' && <View style={styles.line} />}
+
       <Image source={{ uri: data.anime?.info.poster }} style={styles.mainPoster} />
       <Text style={styles.title}>{data.anime?.info.name}</Text>
       
@@ -182,13 +185,11 @@ export default function AnimeInfoComp({ id }: { id: string }) {
       </ScrollView>
 
       {/* Render Episodes */}
-      {episodeData.episodes?.map((episode, index) => {
+      {data.anime?.info.poster && episodeData.episodes?.map((episode, index) => {
         //  const res = getWatchProgressSeason(episode.episodeId);
         //  const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
         const res = useRealm().objects("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
-        // const res = watchProgressSeasons(episode);
-        //  console.log("res Episodes", res);
-
+        
          return (
           <View key={episode.episodeId} style={styles.episodeContainer}>
             <TouchableOpacity onPress={() =>  router.push({ pathname: "/player3", params: { episodeId: episode.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: episode.number, title: episode.title } }) }>
@@ -224,7 +225,7 @@ export default function AnimeInfoComp({ id }: { id: string }) {
       <FlatList
       data={data.mostPopularAnimes}
       renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
+        <TouchableOpacity onPress={() => newComponent(item.id) }>
         <View style={styles.flatlist}>
           <Image source={{ uri: item.poster }} style={styles.poster} />
           {/* <Text>{item.name}</Text> */}
@@ -243,7 +244,7 @@ export default function AnimeInfoComp({ id }: { id: string }) {
       <FlatList
         data={data.relatedAnimes}
         renderItem={({ item }) => (
-          <Pressable onPress={() => router.push({ pathname: "/modal", params: { id: item.id } }) }>
+          <Pressable onPress={() => newComponent(item.id) }>
           <View style={styles.flatlist}>
             <Image source={{ uri: item.poster }} style={styles.poster} />
             {/* <Text>{item.name}</Text> */}
@@ -262,7 +263,7 @@ export default function AnimeInfoComp({ id }: { id: string }) {
     <FlatList
       data={data.recommendedAnimes}
       renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
+        <TouchableOpacity onPress={() => newComponent(item.id) }>
         <View style={styles.flatlist}>
           <Image source={{ uri: item.poster }} style={styles.poster} />
           {/* <Text>{item.name}</Text> */}
@@ -449,4 +450,5 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center'
   },
+ 
 });
