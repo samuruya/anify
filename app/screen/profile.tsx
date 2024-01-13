@@ -9,15 +9,15 @@ export default function ProfileScreen() {
 const q = useQuery("ContinueWatching")
 const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',"jujutsu-kaisen-2nd-season-18413?ep=102662")[0]
   const printDb = () => {
-    console.log(q);
+    console.info(q);
     console.log("res:", res);
     // if (res !== undefined) {
     //   console.log("nicht undefiniert");
     // }else{
     //   console.log("undefiniert");
     // }
-    q.map((s) => (
-      console.log(s.episodeId)
+    q.map((s, index) => (
+      console.log("q:", s.number)
     ))
   }
   
@@ -30,8 +30,8 @@ const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',"jujutsu-
              <Text>Print DB</Text>
         </Pressable>
 
-      <Link href="/player" asChild style={styles.link}>
-             <Text>Player 1</Text>
+      <Link href="/modal" asChild style={styles.link}>
+             <Text>Modal 1</Text>
       </Link>
 
       <Link href="/player2" asChild style={styles.link}>
@@ -62,6 +62,8 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   link: {
-    margin: 20,
+    margin: 10,
+    padding: 20,
+    backgroundColor: 'grey'
   },
 });

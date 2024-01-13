@@ -3,7 +3,7 @@ import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity, 
 // import Carousel from 'react-native-snap-carousel';
 import data from '../../assets/json-data/spotlightData.json';
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
-import { getWatchProgressSeason, getWatchProgressMovie, getContinueWatching, setWatchProgressSeason } from '../db'
+import { getWatchProgressMovie, setWatchProgressSeason } from '../db'
 import { BlurView } from 'expo-blur';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useQuery, useRealm } from "@realm/react";
@@ -21,18 +21,7 @@ export default function TabOneScreen() {
   // if (res[0] !== undefined) {}
 
   // const [continueWatchingeItems, setContinueWatchingItems] = useState({});
-  
-  useEffect(() => {
-    const continueWatching = async () => {
-      const items = await getContinueWatching();
-      setContinueWatchingItems(items)
-    };
-  
-    // continueWatching()
-    
-    
-    
-  }, []);
+
   
   // const [data, setData] = useState([]);
   // useEffect(() => {
@@ -79,21 +68,22 @@ export default function TabOneScreen() {
       <View>
         <Text style={styles.label}>Spotlight</Text>
         <FlatList
+          key={generateRandomID()}
           data={data?.spotlightAnimes}
           renderItem={renderItem} 
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled
           bounces={true}
-          key={generateRandomID()}
         />
 
         {/* Render Contine Watching */}
         <Text style={styles.subtitle}>Continue Watching:</Text>
         <FlatList
+          key={generateRandomID()}
           data={continueWatchingeItems}
           renderItem={({ item }) => (
-            <Pressable onPress={() => router.push({ pathname: "/player3", params: { id: item.id, episodeId: item.episodeId, playStartTime: item.time } }) }>
+            <Pressable onPress={() => router.push({ pathname: "/player3", params: { episodeId: item.episodeId, playStartTime: item.time, titleId: item.id, poster: item.posterUrl, number: item.number, title: item.title } }) }>
               <View style={styles.flatlist} >
                 <View style={styles.conWatchingItemCon}>
                   <View style={styles.overlayContainer}>
@@ -115,14 +105,14 @@ export default function TabOneScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           // pagingEnabled
-          key={generateRandomID()}
           bounces={true}
         />
 
         {/* Render trending Animes */}
         <Text style={styles.subtitle}>Trending Animes:</Text>
         <FlatList
-          data={data.trendingAnimes}
+          key={generateRandomID()}
+          data={data?.trendingAnimes}
           renderItem={({ item }) => (
             <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
             <View style={styles.flatlist}>
@@ -134,16 +124,16 @@ export default function TabOneScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           // pagingEnabled
-          key={generateRandomID()}
           bounces={true}
         />
         {/* Render latest Episode Animes */}
         <Text style={styles.subtitle}>latest Episodes:</Text>
         <FlatList
-          data={data.latestEpisodeAnimes}
+          key={generateRandomID()}
+          data={data?.latestEpisodeAnimes}
           renderItem={({ item }) => (
             <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
-            <View style={styles.flatlist} key={generateRandomID()}>
+            <View style={styles.flatlist}>
               <Image source={{ uri: item.poster }} style={styles.poster} />
               {/* <Text>{item.name}</Text> */}
             </View>
@@ -157,7 +147,8 @@ export default function TabOneScreen() {
         {/* Render topUpcoming Animes */}
         <Text style={styles.subtitle}>top Upcoming Animes:</Text>
         <FlatList
-          data={data.topUpcomingAnimes}
+          key={generateRandomID()}
+          data={data?.topUpcomingAnimes}
           renderItem={({ item }) => (
             <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
             <View style={styles.flatlist}>
@@ -169,13 +160,13 @@ export default function TabOneScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           // pagingEnabled
-          key={generateRandomID()}
           bounces={true}
         />
         {/* Render top10 Animes */}
         <Text style={styles.subtitle}>top 10 Animes:</Text>
         <FlatList
-          data={data.top10Animes.today}
+          key={generateRandomID()}
+          data={data.top10Animes?.today}
           renderItem={({ item }) => (
             <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
             <View style={styles.flatlist}>
@@ -187,27 +178,10 @@ export default function TabOneScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           // pagingEnabled
-          key={generateRandomID()}
           bounces={true}
         />
         {/* Render topAiring Animes */}
-        <Text style={styles.subtitle}>top Airing Animes:</Text>
-        <FlatList
-          data={data.topAiringAnimes}
-          renderItem={({ item }) => (
-            <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
-            <View style={styles.flatlist}>
-              <Image source={{ uri: item.poster }} style={styles.poster} />
-              {/* <Text>{item.name}</Text> */}
-            </View>
-            </Pressable>
-          )}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          // pagingEnabled
-          key={generateRandomID()}
-          bounces={true}
-        />
+            {/* //errorStuff */}
 
         
         

@@ -4,7 +4,7 @@ import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Di
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { getWatchProgressSeason, getWatchProgressMovie, getContinueWatching, } from './db'
+import { getWatchProgressMovie, } from './db'
 import data from '../assets/json-data/animeinfo.json'
 import episodeData from '../assets/json-data/episodeData.json'
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
@@ -20,23 +20,24 @@ export default function AnimeInfo() {
   const idNoPass = 'jujutsu-kaisen-2nd-season-18413'
   const continueWatchingeItem = useQuery("ContinueWatching").filtered('id == $0',id)[0]
   
-  // const [data, setData] = useState([]);
-  // const [episodeData, setEpisodeData] = useState([]);
+  const [data, setData] = useState([]);
+  const [episodeData, setEpisodeData] = useState([]);
   const [continueWatchingTime, setContinueWatchingTime] = useState({});
+
+ 
  
   useEffect(() => {
     console.log('Passed ID', id);
     
-    // fetchData();
-    //fetchEpisodes();
+    fetchData();
+    fetchEpisodes();
   }, []);
 
   useEffect(() => {
-    const continueWatching = () => {
-      // const time = await getContinueWatching(data.anime?.info.id);
+    const continueWatching = async () => {
   
       if (continueWatchingeItem !== undefined) {
-        const find = episodeData.episodes.find((episode) => episode.episodeId === continueWatchingeItem.episodeId);
+        const find = await episodeData.episodes.find((episode) => episode.episodeId === continueWatchingeItem.episodeId);
         const res = { timeInfo: continueWatchingeItem, episodeInfo: find }; 
         setContinueWatchingTime(res);
         console.log('time: not NULL:', continueWatchingeItem);
@@ -65,7 +66,6 @@ export default function AnimeInfo() {
       const resp = await fetch(`https://api-aniwatch.onrender.com/anime/info?id=${id}`);
       const jsonData = await resp.json();
       setData(jsonData);
-      continueWatching()
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -106,7 +106,7 @@ export default function AnimeInfo() {
     setIsExpanded(!isExpanded);
   };
   const words = data.anime?.info.description.split(' ');
-  const truncatedText = isExpanded ? data.anime?.info.description : words.slice(0, 20).join(' ') + '...';
+  const truncatedText = isExpanded ? data.anime?.info.description : words?.slice(0, 20).join(' ') + '...';
 
 
   // async function playVideo(episodeId){
@@ -181,9 +181,11 @@ export default function AnimeInfo() {
       </ScrollView>
 
       {/* Render Episodes */}
-      {episodeData.episodes?.map((episode) => {
+      {episodeData.episodes?.map((episode, index) => {
         //  const res = getWatchProgressSeason(episode.episodeId);
-         const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
+        //  const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
+        const res = useRealm().objects("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
+        // const res = watchProgressSeasons(episode);
         //  console.log("res Episodes", res);
 
          return (
@@ -191,7 +193,7 @@ export default function AnimeInfo() {
             <TouchableOpacity onPress={() =>  router.push({ pathname: "/player3", params: { episodeId: episode.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: episode.number, title: episode.title } }) }>
               <View style={styles.innerContainer}>
                 <View style={styles.overlayContainerTop}>
-                  <Image source={{ uri: data.anime.info.poster }} style={styles.episodeImg } />
+                  <Image source={{ uri: data.anime?.info.poster }} style={styles.episodeImg } />
                     <View style={styles.overlayContainer}>
                       <FontAwesome name="play-circle" size={40} color='#777' style={{ zIndex: 1 }} />
                     </View>
