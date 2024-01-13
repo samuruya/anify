@@ -1,17 +1,34 @@
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import { Link } from 'expo-router';
+import { useQuery } from '@realm/react';
 
 export default function ProfileScreen() {
+const q = useQuery("ContinueWatching")
+const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',"jujutsu-kaisen-2nd-season-18413?ep=102662")[0]
+  const printDb = () => {
+    console.log(q);
+    console.log("res:", res);
+    // if (res !== undefined) {
+    //   console.log("nicht undefiniert");
+    // }else{
+    //   console.log("undefiniert");
+    // }
+    q.map((s) => (
+      console.log(s.episodeId)
+    ))
+  }
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Link href="/modal" asChild style={styles.link}>
-             <Text>Modal</Text>
-        </Link>
+      
+      <Pressable onPress={() => printDb() } style={styles.link}>
+             <Text>Print DB</Text>
+        </Pressable>
 
       <Link href="/player" asChild style={styles.link}>
              <Text>Player 1</Text>

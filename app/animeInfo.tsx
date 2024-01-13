@@ -8,6 +8,7 @@ import { getWatchProgressSeason, getWatchProgressMovie, getContinueWatching, } f
 import data from '../assets/json-data/animeinfo.json'
 import episodeData from '../assets/json-data/episodeData.json'
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
+import { useQuery, useRealm } from "@realm/react";
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -16,6 +17,8 @@ const overlayContainerTopWidth = 100;
 export default function AnimeInfo() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
+  const idNoPass = 'jujutsu-kaisen-2nd-season-18413'
+  const continueWatchingeItem = useQuery("ContinueWatching").filtered('id == $0',id)[0]
   
   // const [data, setData] = useState([]);
   // const [episodeData, setEpisodeData] = useState([]);
@@ -29,23 +32,23 @@ export default function AnimeInfo() {
   }, []);
 
   useEffect(() => {
-    const continueWatching = async () => {
-      const time = await getContinueWatching(data.anime?.info.id);
+    const continueWatching = () => {
+      // const time = await getContinueWatching(data.anime?.info.id);
   
-      if (time) {
-        console.log('time: not NULL', time);
-        const find = episodeData.episodes.find((episode) => episode.episodeId === time.id);
-        const res = { timeInfo: time, episodeInfo: find }; 
+      if (continueWatchingeItem !== undefined) {
+        const find = episodeData.episodes.find((episode) => episode.episodeId === continueWatchingeItem.episodeId);
+        const res = { timeInfo: continueWatchingeItem, episodeInfo: find }; 
         setContinueWatchingTime(res);
+        console.log('time: not NULL:', continueWatchingeItem);
       } else {
         setContinueWatchingTime(null);
-        console.log('time: NULL');
+        console.log('time: NULL:', continueWatchingeItem);
       }
     };
   
     continueWatching()
     
-  }, [data.anime?.info.id, episodeData.episodes]);
+  }, [continueWatchingeItem]);
 
   async function updateInfo(id){
     try {
@@ -78,10 +81,20 @@ export default function AnimeInfo() {
   };
 
   function playCurrent(){
-    console.log(continueWatchingTime.timeInfo.id, continueWatchingTime.timeInfo.time);
-    router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.timeInfo.id, playStartTime: continueWatchingTime.timeInfo.time } })
+    if (continueWatchingTime) {
+      router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.timeInfo.episodeId, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.number, title: continueWatchingTime.title } })
+    }else{
+      const find = episodeData.episodes.find((episode) => episode.number === 1);
+      router.push({ pathname: "/player3", params: { episodeId: find.episodeId, playStartTime: 0, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: 1, title: find.title } })
+      console.log(find);
+    }
+    
+    // router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.timeInfo.id, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.number, title: continueWatchingTime.title } })
   }
 
+  const generateRandomID = () => {
+    return Math.random().toString(36).substr(2, 9);
+  };
 
   function getEpisodeProgress(episodeId){
     return getWatchProgressSeason(episodeId)
@@ -169,11 +182,13 @@ export default function AnimeInfo() {
 
       {/* Render Episodes */}
       {episodeData.episodes?.map((episode) => {
-         const res = getWatchProgressSeason(episode.episodeId);
+        //  const res = getWatchProgressSeason(episode.episodeId);
+         const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
+        //  console.log("res Episodes", res);
 
          return (
           <View key={episode.episodeId} style={styles.episodeContainer}>
-            <TouchableOpacity onPress={() =>  router.push({ pathname: "/player3", params: { episodeId: episode.episodeId } }) }>
+            <TouchableOpacity onPress={() =>  router.push({ pathname: "/player3", params: { episodeId: episode.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: episode.number, title: episode.title } }) }>
               <View style={styles.innerContainer}>
                 <View style={styles.overlayContainerTop}>
                   <Image source={{ uri: data.anime.info.poster }} style={styles.episodeImg } />
@@ -207,7 +222,7 @@ export default function AnimeInfo() {
       data={data.mostPopularAnimes}
       renderItem={({ item }) => (
         <TouchableOpacity onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
-        <View style={styles.flatlist} key={item.id}>
+        <View style={styles.flatlist}>
           <Image source={{ uri: item.poster }} style={styles.poster} />
           {/* <Text>{item.name}</Text> */}
         </View>
@@ -216,6 +231,7 @@ export default function AnimeInfo() {
       horizontal
       showsHorizontalScrollIndicator={false}
       // pagingEnabled
+      key={generateRandomID()}
       bounces={true}
     />
 
@@ -225,7 +241,7 @@ export default function AnimeInfo() {
         data={data.relatedAnimes}
         renderItem={({ item }) => (
           <Pressable onPress={() => router.push({ pathname: "/modal", params: { id: item.id } }) }>
-          <View style={styles.flatlist} key={item.id}>
+          <View style={styles.flatlist}>
             <Image source={{ uri: item.poster }} style={styles.poster} />
             {/* <Text>{item.name}</Text> */}
           </View>
@@ -234,6 +250,7 @@ export default function AnimeInfo() {
         horizontal
         showsHorizontalScrollIndicator={false}
         // pagingEnabled
+        key={generateRandomID()}
         bounces={true}
       />
 
@@ -243,7 +260,7 @@ export default function AnimeInfo() {
       data={data.recommendedAnimes}
       renderItem={({ item }) => (
         <TouchableOpacity onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
-        <View style={styles.flatlist} key={item.id}>
+        <View style={styles.flatlist}>
           <Image source={{ uri: item.poster }} style={styles.poster} />
           {/* <Text>{item.name}</Text> */}
         </View>
@@ -252,6 +269,7 @@ export default function AnimeInfo() {
       horizontal
       showsHorizontalScrollIndicator={false}
       // pagingEnabled
+      key={generateRandomID()}
       bounces={true}
     />
     <Text style={styles.bottom}></Text>

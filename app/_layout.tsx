@@ -4,6 +4,8 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { Platform, useColorScheme } from 'react-native';
+import { RealmProvider } from '@realm/react';
+import { WatchProgressSeason, WatchProgressMovie, ContinueWatching } from './realmModels'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -46,13 +48,16 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="screen" options={{ headerShown: false }} />
-        <Stack.Screen name="player3" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false, statusBarHidden: true }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' ? false : true }} />
-      </Stack>
-    </ThemeProvider>
+    <RealmProvider schema={[WatchProgressSeason, WatchProgressMovie, ContinueWatching]}>
+       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="screen" options={{ headerShown: false }} />
+            <Stack.Screen name="player3" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false, statusBarHidden: true }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' ? false : true }} />
+          </Stack>
+        </ThemeProvider>
+     </RealmProvider>
+   
   );
 }

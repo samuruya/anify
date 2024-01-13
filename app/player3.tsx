@@ -3,10 +3,13 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Video, Audio, ResizeMode } from 'expo-av';
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import Loading from '../components/loading';
+import { setWatchProgressSeason, setContinueWatching } from './db'
+import { useRealm } from "@realm/react";
 
 export default function Player() {
+  const realm = useRealm();
   const router = useRouter();
-  const { episodeId,  playStartTime } = useLocalSearchParams();
+  const { episodeId, playStartTime, titleId, poster, number, title } = useLocalSearchParams();
 
   // const url = 'https://live-par-2-cdn-alt.livepush.io/live/bigbuckbunnyclip/index.m3u8'
   const video = React.useRef(null);
@@ -53,7 +56,7 @@ export default function Player() {
         resizeMode={ResizeMode.CONTAIN}
         shouldPlay
         isMuted={false}
-        positionMillis={playStartTime ? parseFloat(playStartTime) * 60 * 1000 : 0}
+        positionMillis={playStartTime ? parseFloat(playStartTime) : 0}
         onPlaybackStatusUpdate={(newStatus) => {
           setStatus(() => newStatus);
           if (!isReady && newStatus.isLoaded) {
@@ -63,6 +66,11 @@ export default function Player() {
         }}
         onFullscreenUpdate={(e)=>{
           if (e.fullscreenUpdate === 3) {
+            setWatchProgressSeason(realm, episodeId, status.positionMillis, status.durationMillis)
+            console.log("realm-------->", titleId, episodeId, title, number, status.positionMillis, status.durationMillis, url, poster);
+            setContinueWatching(realm, titleId, episodeId, title, parseInt(number), status.positionMillis, status.durationMillis, url, poster)
+            // console.log(status.positionMillis)
+            // console.log(status.durationMillis);
             router.back()
           }
         }}
