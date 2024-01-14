@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button, Pressable } from 'react-native';
+import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button, Pressable, ActivityIndicator } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -9,6 +9,7 @@ import data from '../assets/json-data/animeinfo.json'
 import episodeData from '../assets/json-data/episodeData.json'
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import { useQuery, useRealm } from "@realm/react";
+import { Skeleton } from '@rneui/themed';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -18,11 +19,12 @@ const overlayContainerTopWidth = 100;
 export default function AnimeInfoComp({ id, newComponent }: { id: string; newComponent: (id: string) => void }) {
   const router = useRouter();
 //   const { id } = useLocalSearchParams();
+const [loading, setLoading] = useState(true);
   const continueWatchingeItem = useQuery("ContinueWatching").filtered('id == $0',id)[0]
   const [continueWatchingTime, setContinueWatchingTime] = useState({});
   
-  const [data, setData] = useState([]);
-  const [episodeData, setEpisodeData] = useState([]);
+  const [data, setData] = useState([null]);
+  const [episodeData, setEpisodeData] = useState([null]);
 
 
  
@@ -51,6 +53,15 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
     continueWatching()
     
   }, [continueWatchingeItem, episodeData]);
+
+  useEffect(() => {
+   
+    if (data[0] !== null && episodeData[0] !== null) {
+      setLoading(false)
+      console.log("done LOADING --->>>>>>>")
+    }
+    
+  }, [data, episodeData]);
 
   async function updateInfo(id){
     try {
@@ -122,9 +133,75 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
   //     console.error("Error fetching data:", error);
   //   }
   // }
-  
+
+
+  // if (loading) {
+  //   return (
+  //     <View >
+  //       <ActivityIndicator size="large" color="green" />
+  //     </View>
+  //   );
+  // }
 
   return (
+    <>
+    {loading ? (
+      <View style={styles.skelleton}>
+
+        <Skeleton
+          width={windowWidth}
+          height={220}
+          animation="pulse"
+          style={styles.mainPosterSkeleton}
+        />
+        <Skeleton
+          width={150}
+          height={20}
+          animation="pulse"
+          style={styles.titleSkeleton}
+        />
+        <Skeleton
+          width={windowWidth - 150}
+          height={40}
+          animation="pulse"
+          style={styles.playButtonSkeleton}
+        />
+        <Skeleton
+          width={windowWidth - 30}
+          height={100}
+          animation="pulse"
+          style={styles.descriptionSkeleton}
+        />
+        <Skeleton
+          width={60}
+          height={20}
+          animation="pulse"
+          style={styles.subtitleSkeleton}
+        />
+        <View style={styles.seasonScrollContainer}>
+        {[1, 2, 3].map((seasonId) => (
+            <Skeleton
+              key={seasonId}
+              width={110}
+              height={50}
+              animation="pulse"
+              style={styles.seasonContainerSkeleton}
+            />
+        ))}
+        </View>
+        {Array.from({ length: 10 }).map((_, index) => (
+          <Skeleton
+            key={index}
+            width={windowWidth - 30}
+            height={100}
+            animation="pulse"
+            style={styles.episodeContainerSkeleton}
+          />
+        ))}
+
+      </View>
+    ) : 
+
     <ScrollView contentContainerStyle={styles.scrollContainer}>
     <View style={styles.container}>
       {Platform.OS === 'ios' && <View style={styles.line} />}
@@ -189,7 +266,6 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
         //  const res = getWatchProgressSeason(episode.episodeId);
         //  const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
         const res = useRealm().objects("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
-        console.log("episodeId:", episode.episodeId)
         
          return (
           <View key={episode.episodeId} style={styles.episodeContainer}>
@@ -282,6 +358,9 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
     </ScrollView>
+
+    }
+    </>
   );
 }
 
@@ -451,5 +530,44 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center'
   },
+
+  skelleton:{
+    alignItems: 'center',
+  },
+  mainPosterSkeleton: {
+    marginBottom: 10,
+  },
+  titleSkeleton: {
+    margin: 15,
+    marginBottom: 10,
+    alignSelf: 'center',
+  },
+  playButtonSkeleton: {
+    position: 'relative',
+    borderRadius: 5,
+    marginTop: 15,
+    marginBottom: 15,
+    alignSelf: 'center',
+  },
+  descriptionSkeleton: {
+    margin: 15,
+    marginBottom: 10,
+  },
+  subtitleSkeleton: {
+    margin: 15,
+    marginBottom: 10,
+  },
+  seasonContainerSkeleton: {
+    margin: 10,
+    width: 110,
+    height: 50,
+  },
+  episodeContainerSkeleton: {
+    width: windowWidth - 30,
+    margin: 10,
+    marginBottom: 5,
+    height: 100,
+  },
+  
  
 });

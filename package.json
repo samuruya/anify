@@ -16,6 +16,7 @@
     "@expo/vector-icons": "^13.0.0",
     "@react-native-community/slider": "4.4.2",
     "@realm/react": "^0.6.2",
+    "@rneui/themed": "^4.0.0-rc.8",
     "better-sqlite3": "^9.2.2",
     "expo": "^49.0.21",
     "expo-av": "~13.4.1",

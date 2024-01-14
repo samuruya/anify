@@ -5,6 +5,7 @@ import { Text, View } from '../../components/Themed';
 import { Link } from 'expo-router';
 import { useQuery, useRealm } from '@realm/react';
 import { setWatchProgressSeason } from '../db';
+import { useState } from 'react';
 
 export default function ProfileScreen() {
   const realm = useRealm()
@@ -13,6 +14,8 @@ const WatchProgressSeason = useQuery("WatchProgressSeason")
 const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',"jujutsu-kaisen-2nd-season-18413?ep=102662")[0]
 
 const testData = useRealm().objects("HomeData")[0]
+
+const [data, setData] = useState([null]);
 
   const printDb = () => {
     console.info(ContinueWatching);
@@ -29,8 +32,8 @@ const testData = useRealm().objects("HomeData")[0]
 
   const test = () => {
     
-    const tt = JSON.parse(testData.data)
-    console.log("res:", tt.spotlightAnimes);
+
+    console.log("res:", data[0]);
     // console.log("res:", testData);
 
   }
