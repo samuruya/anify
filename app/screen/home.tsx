@@ -6,6 +6,8 @@ import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useQuery, useRealm } from "@realm/react";
+import { HomeData } from '../realmModels';
+import { BSON } from 'realm';
 
 const windowWidth = Dimensions.get('window').width;
 const conWatchingItemConWith = 200;
@@ -14,27 +16,59 @@ export default function TabOneScreen() {
   const realm = useRealm();
   const router = useRouter();
   const params = useLocalSearchParams();
-  // console.log("realmDB:", useQuery("WatchProgressSeason"));
+ 
   const continueWatchingeItems = useQuery("ContinueWatching").sorted("datetime", true)
-
-  // if (res[0] !== undefined) {}
-
-  // const [continueWatchingeItems, setContinueWatchingItems] = useState({});
+  // const homeData = useQuery("HomeData")[0]
+  
 
   
   // const [data, setData] = useState([]);
   // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const resp = await fetch("https://api-aniwatch.onrender.com/anime/home");
-  //       const jsonData = await resp.json();
-  //       setData(jsonData);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
+
+  //   const jsonHomeData = JSON.parse(homeData.data)
+  //   setData(jsonHomeData);
+  //   fetchData()
+
+//   }, []);
+
+  const fetchData = async () => {
+    try {
+      const resp = await fetch("https://api-aniwatch.onrender.com/anime/home");
+      const jsonData = await resp.json();
+      updateHomeData(data)
+  //    setData(jsonData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  // Function ####################
+  function updateHomeData(data){
+    const toUpdate = realm.objects(HomeData)[0]
+
+    if(toUpdate !== undefined) {
+        console.info("Realm: Update Home");
+        realm.write(() => {
+            toUpdate.data = JSON.stringify(data)
+          });
+
+    }else{
+        console.info("Realm: First Start");
+        realm.write(() => {
+            realm.create(HomeData, {
+                _id: new BSON.UUID(),
+                data: JSON.stringify(data)
+            });
+        });
+    }
+    
+}
+  // End ##############
+
+
+
+
+
 
   const generateRandomID = () => {
     return Math.random().toString(36).substr(2, 9);

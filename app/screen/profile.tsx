@@ -12,7 +12,7 @@ const ContinueWatching = useQuery("ContinueWatching").sorted("datetime", true)
 const WatchProgressSeason = useQuery("WatchProgressSeason")
 const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',"jujutsu-kaisen-2nd-season-18413?ep=102662")[0]
 
-const testData = useRealm().objects("ContinueWatching").filtered('episodeId == $0', "jujutsu-kaisen-2nd-season-18413?ep=102662")[0]
+const testData = useRealm().objects("HomeData")[0]
 
   const printDb = () => {
     console.info(ContinueWatching);
@@ -28,8 +28,11 @@ const testData = useRealm().objects("ContinueWatching").filtered('episodeId == $
   }
 
   const test = () => {
-    setWatchProgressSeason(realm, "attack-on-titan-112?ep=3303", 379303, 1435064)
-    console.log("res:", res);
+    
+    const tt = JSON.parse(testData.data)
+    console.log("res:", tt.spotlightAnimes);
+    // console.log("res:", testData);
+
   }
   
   return (

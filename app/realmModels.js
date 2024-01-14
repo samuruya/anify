@@ -66,3 +66,13 @@ export class ContinueWatching extends Realm.Object {
 
   
 }
+
+export class HomeData extends Realm.Object {}
+HomeData.schema = {
+  name: 'HomeData',
+  primaryKey: "_id",
+  properties: {
+    _id: 'uuid', 
+    data: 'string',
+  },
+};

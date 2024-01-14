@@ -5,7 +5,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { Platform, useColorScheme } from 'react-native';
 import { RealmProvider } from '@realm/react';
-import { WatchProgressSeason, WatchProgressMovie, ContinueWatching } from './realmModels'
+import { WatchProgressSeason, WatchProgressMovie, ContinueWatching, HomeData } from './realmModels'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -48,7 +48,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <RealmProvider schema={[WatchProgressSeason, WatchProgressMovie, ContinueWatching]}>
+    <RealmProvider schema={[WatchProgressSeason, WatchProgressMovie, ContinueWatching, HomeData]}>
        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DarkTheme}>
           <Stack>
             <Stack.Screen name="screen" options={{ headerShown: false }} />
