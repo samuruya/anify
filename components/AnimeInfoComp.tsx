@@ -87,7 +87,7 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
 
   function playCurrent(){
     if (continueWatchingTime) {
-      router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.timeInfo.episodeId, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.number, title: continueWatchingTime.title } })
+      router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.timeInfo.episodeId, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.timeInfo.number, title: continueWatchingTime.timeInfo.title } })
     }else{
       const find = episodeData.episodes.find((episode) => episode.number === 1);
     //   console.info("info: ",data.anime?.info.id);
@@ -185,10 +185,11 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
       </ScrollView>
 
       {/* Render Episodes */}
-      {data.anime?.info.poster && episodeData.episodes?.map((episode, index) => {
+      {episodeData.episodes && data.anime?.info.poster && episodeData.episodes?.map((episode) => {
         //  const res = getWatchProgressSeason(episode.episodeId);
         //  const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
         const res = useRealm().objects("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
+        console.log("episodeId:", episode.episodeId)
         
          return (
           <View key={episode.episodeId} style={styles.episodeContainer}>
@@ -199,10 +200,10 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
                     <View style={styles.overlayContainer}>
                       <FontAwesome name="play-circle" size={40} color='#777' style={{ zIndex: 1 }} />
                     </View>
-                    {res ? (
+                    {res?.time !== undefined && res?.length !== undefined ? (
                       <View>
                         <View style={styles.progressLineFull} />
-                        <View style={[styles.progressLine, { width: (res.time / res.length) * overlayContainerTopWidth }]} />
+                        <View style={[styles.progressLine, { width: (res?.time / res?.length) * overlayContainerTopWidth }]} />
                       </View>
                     ) : null}
                 </View>

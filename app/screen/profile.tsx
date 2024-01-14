@@ -3,44 +3,67 @@ import { Pressable, StyleSheet } from 'react-native';
 import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import { Link } from 'expo-router';
-import { useQuery } from '@realm/react';
+import { useQuery, useRealm } from '@realm/react';
+import { setWatchProgressSeason } from '../db';
 
 export default function ProfileScreen() {
-const q = useQuery("ContinueWatching")
+  const realm = useRealm()
+const ContinueWatching = useQuery("ContinueWatching").sorted("datetime", true)
+const WatchProgressSeason = useQuery("WatchProgressSeason")
 const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',"jujutsu-kaisen-2nd-season-18413?ep=102662")[0]
+
+const testData = useRealm().objects("ContinueWatching").filtered('episodeId == $0', "jujutsu-kaisen-2nd-season-18413?ep=102662")[0]
+
   const printDb = () => {
-    console.info(q);
+    console.info(ContinueWatching);
     console.log("res:", res);
     // if (res !== undefined) {
     //   console.log("nicht undefiniert");
     // }else{
     //   console.log("undefiniert");
     // }
-    q.map((s, index) => (
+    ContinueWatching.map((s, index) => (
       console.log("q:", s.number)
     ))
+  }
+
+  const test = () => {
+    setWatchProgressSeason(realm, "attack-on-titan-112?ep=3303", 379303, 1435064)
+    console.log("res:", res);
   }
   
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
+      <Text style={styles.title}>Settings (dev)</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       
       <Pressable onPress={() => printDb() } style={styles.link}>
              <Text>Print DB</Text>
+      </Pressable>
+
+      <Pressable onPress={() => console.log(ContinueWatching) } style={styles.link}>
+          <Text>ContinueWatching</Text>
+      </Pressable>
+      
+      <Pressable onPress={() => console.log(WatchProgressSeason) } style={styles.link}>
+             <Text>WatchProgressSeason</Text>
+      </Pressable>
+
+      <Pressable onPress={() => test() } style={styles.link}>
+             <Text>Test</Text>
         </Pressable>
 
-      <Link href="/modal" asChild style={styles.link}>
+      {/* <Link href="/modal" asChild style={styles.link}>
              <Text>Modal 1</Text>
-      </Link>
+      </Link> */}
 
-      <Link href="/player2" asChild style={styles.link}>
+      {/* <Link href="/player2" asChild style={styles.link}>
           <Text>Player 2</Text>
-      </Link>
+      </Link> */}
       
-      <Link href="/player3" asChild style={styles.link}>
+      {/* <Link href="/player3" asChild style={styles.link}>
              <Text>Player 3</Text>
-        </Link>
+        </Link> */}
       {/* <EditScreenInfo path="app/screen/two.tsx" /> */}
     </View>
   );

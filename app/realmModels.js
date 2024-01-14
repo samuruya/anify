@@ -60,6 +60,7 @@ export class ContinueWatching extends Realm.Object {
       length: "int",
       url: 'string',
       posterUrl: 'string',
+      datetime: 'date',
     },
   };
 

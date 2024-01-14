@@ -3,7 +3,6 @@ import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity, 
 // import Carousel from 'react-native-snap-carousel';
 import data from '../../assets/json-data/spotlightData.json';
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
-import { getWatchProgressMovie, setWatchProgressSeason } from '../db'
 import { BlurView } from 'expo-blur';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useQuery, useRealm } from "@realm/react";
@@ -15,8 +14,8 @@ export default function TabOneScreen() {
   const realm = useRealm();
   const router = useRouter();
   const params = useLocalSearchParams();
-  console.log("realmDB:", useQuery("WatchProgressSeason"));
-  const continueWatchingeItems = useQuery("ContinueWatching")
+  // console.log("realmDB:", useQuery("WatchProgressSeason"));
+  const continueWatchingeItems = useQuery("ContinueWatching").sorted("datetime", true)
 
   // if (res[0] !== undefined) {}
 

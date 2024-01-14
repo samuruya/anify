@@ -49,7 +49,7 @@ function RootLayoutNav() {
 
   return (
     <RealmProvider schema={[WatchProgressSeason, WatchProgressMovie, ContinueWatching]}>
-       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DarkTheme}>
           <Stack>
             <Stack.Screen name="screen" options={{ headerShown: false }} />
             <Stack.Screen name="player3" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false, statusBarHidden: true }} />

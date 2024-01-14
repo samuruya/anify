@@ -66,7 +66,7 @@ export default function Player() {
         }}
         onFullscreenUpdate={(e)=>{
           if (e.fullscreenUpdate === 3) {
-            // console.log("realm-------->", titleId, episodeId, title, number, status.positionMillis, status.durationMillis, url, poster);
+            // console.log("realm-------->", "TitleID:",titleId, "EpisodeID:",episodeId, "Title:",title, "Number:",number, "Time:",status.positionMillis, "Duration:",status.durationMillis, "Url:",url, "PosterURL:",poster);
             setWatchProgressSeason(realm, episodeId, status.positionMillis, status.durationMillis)
             setContinueWatching(realm, titleId, episodeId, title, parseInt(number), status.positionMillis, status.durationMillis, url, poster)
   
