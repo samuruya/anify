@@ -10,7 +10,7 @@ workflows:
           npm install
       - name: Build IPA
         script: |
-          expo build:ios --non-interactive --clear
+          expo build:ios
       - name: Archive and Package
         script: |
           mkdir -p $CM_BUILD_DIR/unsigned-ipa
