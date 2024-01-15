@@ -1,0 +1,19 @@
+# codemagic.yaml
+
+workflows:
+  main:
+    name: Build and Package
+    scripts:
+      - name: Install Dependencies
+        script: |
+          npm install -g expo-cli
+          npm install
+      - name: Build IPA
+        script: |
+          expo build:ios --non-interactive --clear
+      - name: Archive and Package
+        script: |
+          mkdir -p $CM_BUILD_DIR/unsigned-ipa
+          cp $CM_BUILD_DIR/*.ipa $CM_BUILD_DIR/unsigned-ipa/app.ipa
+    artifacts:
+      - unsigned-ipa/**
