@@ -7,11 +7,10 @@ workflows:
       - name: Install Dependencies
         script: |
           npm install -g expo-cli
-          npm install -g eas-cli
           npm install
       - name: Build IPA
         script: |
-          eas build --platform ios --profile preview --local
+          expo build:ios --non-interactive --clear
       - name: Archive and Package
         script: |
           mkdir -p $CM_BUILD_DIR/unsigned-ipa
