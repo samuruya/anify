@@ -1,80 +1,85 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Button, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
-import { Video, ResizeMode } from 'expo-av';
+import { View, StyleSheet, TouchableOpacity, Text, StatusBar } from 'react-native';
+import { Video, Audio, ResizeMode } from 'expo-av';
+import { Link, useRouter, useLocalSearchParams } from 'expo-router';
+import Loading from '../components/loading';
+import { setWatchProgressSeason, setContinueWatching } from './db'
+import { useRealm } from "@realm/react";
 
-export default function App() {
+export default function Player() {
+  const realm = useRealm();
+  const router = useRouter();
+  const { episodeId, playStartTime, titleId, poster, number, title } = useLocalSearchParams();
+
+
+  const url = 'https://live-par-2-cdn-alt.livepush.io/live/bigbuckbunnyclip/index.m3u8'
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
+  // const [url, setUlr] = useState([]);
   const [isReady, setIsReady] = React.useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  const openFullscreenPlayer = async () => {
-    if (video.current && isReady) {
-      await video.current.presentFullscreenPlayerAsync();
-    }
-  };
-
-  const dismissFullscreenPlayer = () => {
-    if (video.current) {
-      video.current.dismissFullscreenPlayer();
-      setIsFullscreen(false);
-    }
-  };
+  const [isLoading, setIsLoading] = React.useState(true);
 
   useEffect(() => {
-    const onFullscreenUpdate = (event) => {
-      if (event.fullscreenUpdate === Video.FULLSCREEN_UPDATE_PLAYER_WILL_PRESENT) {
-        setIsFullscreen(true);
-      } else if (event.fullscreenUpdate === Video.FULLSCREEN_UPDATE_PLAYER_DID_DISMISS) {
-        setIsFullscreen(false);
-        console.log("Nav-back");
-        ; // Add your navigation logic here
+    Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+    async function playVideo(episodeId){
+      try {
+        const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
+        const jsonData = await resp.json();
+        setUlr(jsonData.sources[0].url)
+        console.log("done Fetching URL", jsonData.sources[0].url);
+        //  console.log("playtime",playStartTime);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        router.back()
       }
-    };
+    }
 
-    
-    return () => {
-      video.current.setOnFullscreenUpdate(null);
-    };
+    // playVideo(episodeId)
+ 
   }, []);
 
-  const onPlaybackStatusUpdate = (newStatus) => {
-    setStatus(() => newStatus);
-
-    if (!isReady && newStatus.isLoaded) {
-      setIsReady(true);
-      setIsLoading(false); // Set loading to false once the video is loaded
-      openFullscreenPlayer();
+  async function openFullscreenPlayer () {
+    if (video.current) {
+      await video.current.presentFullscreenPlayer();
+      setIsLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle={'light-content'} hidden={true} />
       <Video
         ref={video}
-        style={isFullscreen ? styles.fullscreenVideo : styles.video}
+        style={styles.video}
         source={{
-          uri: 'https://live-par-2-cdn-alt.livepush.io/live/bigbuckbunnyclip/index.m3u8',
+          uri: url,
         }}
-        useNativeControls={false} // Disable native controls
+        useNativeControls
         resizeMode={ResizeMode.CONTAIN}
-        isLooping
         shouldPlay
-        onPlaybackStatusUpdate={onPlaybackStatusUpdate}
+        isMuted={false}
+        positionMillis={playStartTime ? parseFloat(playStartTime) : 0}
+        onPlaybackStatusUpdate={(newStatus) => {
+          setStatus(() => newStatus);
+          if (!isReady && newStatus.isLoaded) {
+            setIsReady(true);
+            openFullscreenPlayer(); 
+          }
+        }}
+        onFullscreenUpdate={(e)=>{
+          if (e.fullscreenUpdate === 3) {
+            // console.log("realm-------->", "TitleID:",titleId, "EpisodeID:",episodeId, "Title:",title, "Number:",number, "Time:",status.positionMillis, "Duration:",status.durationMillis, "Url:",url, "PosterURL:",poster);
+           
+            // setWatchProgressSeason(realm, episodeId, status.positionMillis, status.durationMillis)
+            // setContinueWatching(realm, titleId, episodeId, title, parseInt(number), status.positionMillis, status.durationMillis, url, poster)
+  
+            router.back()
+          }
+        }}
       />
-      {isLoading && (
-        <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#fff" />
-        </View>
-      )}
-      {isFullscreen && (
-        <View style={styles.closeButtonContainer}>
-          <TouchableOpacity onPress={dismissFullscreenPlayer}>
-            <Text style={styles.closeButton}>X</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+
+      {isLoading && <Loading />}
+      
     </View>
   );
 }
@@ -86,27 +91,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   video: {
-    ...StyleSheet.absoluteFillObject,
+    display: 'none',
+    alignSelf: 'center',
+    width: 320,
+    height: 200,
   },
-  fullscreenVideo: {
-    flex: 1,
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
+  buttons: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  closeButtonContainer: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 20,
-    padding: 10,
-  },
-  closeButton: {
-    color: '#fff',
-    fontSize: 18,
   },
 });

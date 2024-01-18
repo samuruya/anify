@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, TextInput, Dimensions, Image, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, TextInput, Dimensions, Image, TouchableOpacity, FlatList, StatusBar } from 'react-native';
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
@@ -42,6 +42,7 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle={'light-content'}/>
       
       <View style={styles.searchContainer}>
         <FontAwesome
