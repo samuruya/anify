@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button, Pressable, ActivityIndicator } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
@@ -98,15 +97,15 @@ const [loading, setLoading] = useState(true);
 
   function playCurrent(){
     if (continueWatchingTime) {
-      router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.timeInfo.episodeId, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.timeInfo.number, title: continueWatchingTime.timeInfo.title } })
+      router.push({ pathname: "/player", params: { episodeId: continueWatchingTime.timeInfo.episodeId, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.timeInfo.number, title: continueWatchingTime.timeInfo.title } })
     }else{
       const find = episodeData.episodes.find((episode) => episode.number === 1);
     //   console.info("info: ",data.anime?.info.id);
-      router.push({ pathname: "/player3", params: { episodeId: find.episodeId, playStartTime: 0, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: 1, title: find.title } })
+      router.push({ pathname: "/player", params: { episodeId: find.episodeId, playStartTime: 0, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: 1, title: find.title } })
     //   console.log(find);
     }
     
-    // router.push({ pathname: "/player3", params: { episodeId: continueWatchingTime.timeInfo.id, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.number, title: continueWatchingTime.title } })
+    // router.push({ pathname: "/player", params: { episodeId: continueWatchingTime.timeInfo.id, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.number, title: continueWatchingTime.title } })
   }
 
   const generateRandomID = () => {
@@ -128,7 +127,7 @@ const [loading, setLoading] = useState(true);
   //     const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
   //     const jsonData = await resp.json();
   //     const url = jsonData.sources[0].url
-  //     router.push({ pathname: "/player3", params: { url: url } })
+  //     router.push({ pathname: "/player", params: { url: url } })
   //   } catch (error) {
   //     console.error("Error fetching data:", error);
   //   }
@@ -269,7 +268,7 @@ const [loading, setLoading] = useState(true);
         
          return (
           <View key={episode.episodeId} style={styles.episodeContainer}>
-            <TouchableOpacity onPress={() =>  router.push({ pathname: "/player3", params: { episodeId: episode.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: episode.number, title: episode.title } }) }>
+            <TouchableOpacity onPress={() =>  router.push({ pathname: "/player", params: { episodeId: episode.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: episode.number, title: episode.title } }) }>
               <View style={styles.innerContainer}>
                 <View style={styles.overlayContainerTop}>
                   <Image source={{ uri: data.anime?.info.poster }} style={styles.episodeImg } />
@@ -355,7 +354,6 @@ const [loading, setLoading] = useState(true);
     />
     <Text style={styles.bottom}></Text>
 
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
     </ScrollView>
 

@@ -3,8 +3,9 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { Platform, useColorScheme } from 'react-native';
+import { Platform, useColorScheme, StatusBar } from 'react-native';
 import { RealmProvider } from '@realm/react';
+import * as Device from 'expo-device';
 import { WatchProgressSeason, WatchProgressMovie, ContinueWatching, HomeData } from './realmModels'
 
 export {
@@ -40,8 +41,16 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
   return <RootLayoutNav />;
+}
+var t = 'portrait';
+
+if(Device.deviceType === Device.DeviceType.TABLET){
+   t = 'all'
+   console.log("tablet")
+}else{
+   t = 'portrait'
+   console.log("phone")
 }
 
 function RootLayoutNav() {
@@ -51,11 +60,12 @@ function RootLayoutNav() {
     <RealmProvider schema={[WatchProgressSeason, WatchProgressMovie, ContinueWatching, HomeData]}>
        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DarkTheme}>
           <Stack>
-            <Stack.Screen name="screen" options={{ headerShown: false }} />
-            <Stack.Screen name="player3" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false, statusBarHidden: true }} />
+            <Stack.Screen name="screen" options={{ headerShown: false, orientation: t }} />
+            <Stack.Screen name="player" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false, orientation: 'all' }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: false }} />
+            <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: false, orientation: t }} />
             {/* <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' ? false : true }} /> */}
+            <Stack.Screen name="player2" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false, orientation: 'landscape' }} />
           </Stack>
         </ThemeProvider>
      </RealmProvider>

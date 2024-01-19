@@ -1,10 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button, Pressable } from 'react-native';
+import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button, Pressable, BackHandler, StatusBar  } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { getWatchProgressMovie, } from './db'
 import data from '../assets/json-data/animeinfo.json'
 import episodeData from '../assets/json-data/episodeData.json'
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
@@ -46,9 +44,29 @@ export default function AnimeInfo() {
     // setRenderList(render)
   }
 
+  // useEffect(() => {
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     () => {
+       
+  //       if (renderList.length > 1) {
+  //         goBack()
+  //         return true;
+  //       } else {
+         
+  //         goBack()
+  //         // router.back();
+  //       }
+  //     }
+  //   );
+  //   backHandler
+  //   // return () => backHandler.remove(); 
+  // }, [router]);
+
+
   return (
     <>
-    
+      <StatusBar barStyle={'light-content'}/>
       {/* {render[render.length - 1]} */}
       {renderList[renderList.length - 1]}
       {renderList.length > 1 && (

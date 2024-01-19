@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity, Pressable, ScrollView } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity, Pressable, ScrollView, StatusBar } from 'react-native';
 // import Carousel from 'react-native-snap-carousel';
 import data from '../../assets/json-data/spotlightData.json';
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
@@ -16,6 +16,8 @@ export default function TabOneScreen() {
   const realm = useRealm();
   const router = useRouter();
   const params = useLocalSearchParams();
+  const {orientation} = params;
+  console.log(orientation)
  
   const continueWatchingeItems = useQuery("ContinueWatching").sorted("datetime", true)
   // const homeData = useQuery("HomeData")[0]
@@ -91,6 +93,7 @@ export default function TabOneScreen() {
   );
 
   return (
+    
     // <Carousel
     //   data={data.spotlightAnimes}
     //   renderItem={renderItem}
@@ -99,6 +102,7 @@ export default function TabOneScreen() {
     // />
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View>
+      <StatusBar barStyle={'light-content'}/>
         <Text style={styles.label}>Spotlight</Text>
         <FlatList
           key={generateRandomID()}
@@ -116,7 +120,7 @@ export default function TabOneScreen() {
           key={generateRandomID()}
           data={continueWatchingeItems}
           renderItem={({ item }) => (
-            <Pressable onPress={() => router.push({ pathname: "/player3", params: { episodeId: item.episodeId, playStartTime: item.time, titleId: item.id, poster: item.posterUrl, number: item.number, title: item.title } }) }>
+            <Pressable onPress={() => router.push({ pathname: "/player", params: { episodeId: item.episodeId, playStartTime: item.time, titleId: item.id, poster: item.posterUrl, number: item.number, title: item.title } }) }>
               <View style={styles.flatlist} >
                 <View style={styles.conWatchingItemCon}>
                   <View style={styles.overlayContainer}>
@@ -229,6 +233,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   itemContainer: {
+    flexGrow: 1,
     flexDirection: 'row',
     // marginTop: 10,
     // borderBottomWidth: 1,
