@@ -36,7 +36,7 @@ export default function ProfileScreen() {
       
 
        //  episodeId: item.episodeId, playStartTime: item.time, titleId: item.id, poster: item.posterUrl, number: item.number, title: item.title
-       router.push({ pathname: "/player", params: {  } }) 
+       router.push({ pathname: "/player2", params: { episodeId: "item.episodeId", playStartTime: 0, titleId: "item.id", poster: "item.posterUrl", number: 2, title: "Hidden Inventory" } }) 
 
     }
   

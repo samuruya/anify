@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, StatusBar } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, StatusBar, Dimensions } from 'react-native';
 import { Video, Audio, ResizeMode } from 'expo-av';
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import Loading from '../components/loading';
@@ -12,10 +12,10 @@ export default function Player() {
   const { episodeId, playStartTime, titleId, poster, number, title } = useLocalSearchParams();
 
 
-  const url = 'https://live-par-2-cdn-alt.livepush.io/live/bigbuckbunnyclip/index.m3u8'
+  // const url = 'https://live-par-2-cdn-alt.livepush.io/live/bigbuckbunnyclip/index.m3u8'
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
-  // const [url, setUlr] = useState([]);
+  const [url, setUlr] = useState([]);
   const [isReady, setIsReady] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -34,7 +34,7 @@ export default function Player() {
       }
     }
 
-    // playVideo(episodeId)
+    playVideo(episodeId)
  
   }, []);
 
@@ -70,8 +70,8 @@ export default function Player() {
           if (e.fullscreenUpdate === 3) {
             // console.log("realm-------->", "TitleID:",titleId, "EpisodeID:",episodeId, "Title:",title, "Number:",number, "Time:",status.positionMillis, "Duration:",status.durationMillis, "Url:",url, "PosterURL:",poster);
            
-            // setWatchProgressSeason(realm, episodeId, status.positionMillis, status.durationMillis)
-            // setContinueWatching(realm, titleId, episodeId, title, parseInt(number), status.positionMillis, status.durationMillis, url, poster)
+            setWatchProgressSeason(realm, episodeId, status.positionMillis, status.durationMillis)
+            setContinueWatching(realm, titleId, episodeId, title, parseInt(number), status.positionMillis, status.durationMillis, url, poster)
   
             router.back()
           }
