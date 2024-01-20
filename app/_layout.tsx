@@ -61,6 +61,7 @@ function RootLayoutNav() {
        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DarkTheme}>
           <Stack>
             <Stack.Screen name="screen" options={{ headerShown: false, orientation: t }} />
+            <Stack.Screen name="index" options={{ headerShown: false, orientation: t }} />
             <Stack.Screen name="player" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false, orientation: 'all' }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
             <Stack.Screen name="animeInfo" options={{ presentation: 'modal', headerShown: false, orientation: t }} />
@@ -68,7 +69,7 @@ function RootLayoutNav() {
             <Stack.Screen name="player2" options={{ presentation: 'fullScreenModal', animation: 'none', headerShown: false, orientation: 'landscape' }} />
           </Stack>
         </ThemeProvider>
-     </RealmProvider>
+      </RealmProvider>
    
   );
 }
