@@ -129,11 +129,13 @@ export default function Player2() {
       useNativeDriver: false, 
     }).start(() => {
       
-      if(isPlaying){
-        setTimeout(() => {
+      setTimeout(() => {
+        console.log(isPlaying)
+        if(isPlaying){
           fadeOut();
-        }, 4000);
-      }
+        }
+      }, 4000);
+      
     })
   
   }

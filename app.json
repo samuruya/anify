@@ -2,7 +2,7 @@
   "expo": {
     "name": "Anify",
     "slug": "anify",
-    "version": "1.0.0",
+    "version": "1.0.0 (dev)",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",

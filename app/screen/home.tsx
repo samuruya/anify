@@ -9,15 +9,16 @@ import { useQuery, useRealm } from "@realm/react";
 import { HomeData } from '../realmModels';
 import { BSON } from 'realm';
 
-const windowWidth = Dimensions.get('window').width;
 const conWatchingItemConWith = 200;
 
-export default function TabOneScreen() {
+export default function HomeScreen() {
   const realm = useRealm();
   const router = useRouter();
   const params = useLocalSearchParams();
   const {orientation} = params;
-  console.log(orientation)
+
+  const windowWidth = Dimensions.get('window').width;
+  console.log("width:",windowWidth)
  
   const continueWatchingeItems = useQuery("ContinueWatching").sorted("datetime", true)
   // const homeData = useQuery("HomeData")[0]
@@ -80,7 +81,7 @@ export default function TabOneScreen() {
     
     <Link href={{ pathname: "/animeInfo", params: { id: item.id } }} asChild>
       <Pressable>
-          <View style={styles.itemContainer}>
+          <View style={{...styles.itemContainer, width: windowWidth}}>
             <View style={styles.detailsContainer}>
               <Image source={{ uri: item.poster }} style={styles.spotlightPoster} />
               <Text style={styles.title}>{item.name}</Text>
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
     alignItems: 'center',
     height: 300,
-    width: windowWidth,
+    
   },
   spotlightPoster: {
     width: 350,
@@ -277,6 +278,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 10,
+    marginLeft: 20,
     color: 'white',
   },
   poster: {
