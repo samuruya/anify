@@ -10,10 +10,6 @@ workflows:
           npm install
       - name: Build IPA
         script: |
-          npx expo prebuild -p ios
-      - name: Archive and Package
-        script: |
-          mkdir -p $CM_BUILD_DIR/unsigned-ipa
-          cp $CM_BUILD_DIR/*.ipa $CM_BUILD_DIR/unsigned-ipa/app.ipa
-    artifacts:
-      - unsigned-ipa/**
+          expo build:ios -t archive
+      artifacts:
+        - ios/build/**
