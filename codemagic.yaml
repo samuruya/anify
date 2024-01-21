@@ -11,5 +11,6 @@ workflows:
       - name: Build IPA
         script: |
           expo build:ios -t archive
-      artifacts:
-        - ios/build/**
+      
+    artifacts:
+      - unsigned-ipa/**
