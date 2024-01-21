@@ -13,4 +13,4 @@ workflows:
           expo build:ios -t archive
       
     artifacts:
-      - unsigned-ipa/**
+      - ios/build/**
