@@ -10,7 +10,7 @@ workflows:
           npm install
       - name: Build IPA
         script: |
-          expo build:ios -t archive
+          npx expo prebuild -p ios
       
     artifacts:
       - ios/build/**
