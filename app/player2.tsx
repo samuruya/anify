@@ -1,34 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, StatusBar, Dimensions, Pressable, Animated } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, StatusBar, Dimensions } from 'react-native';
 import { Video, Audio, ResizeMode } from 'expo-av';
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import Loading from '../components/loading';
 import { setWatchProgressSeason, setContinueWatching } from './db'
 import { useRealm } from "@realm/react";
-import Slider from '@react-native-community/slider';
-import { FontAwesome, Entypo, MaterialIcons } from '@expo/vector-icons';
 
-var isVisible = true 
-const fadeAnim = new Animated.Value(1);
-
-export default function Player2() {
+export default function Player() {
   const realm = useRealm();
   const router = useRouter();
   const { episodeId, playStartTime, titleId, poster, number, title } = useLocalSearchParams();
-  
-  const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
 
-  const url = 'https://eno.tendoloads.com/_v6/e4b7462bd2d95d38a6070bce1e930ef2d91de98a86a27c1258350511b2611ce82602aaf03cad6d5364fb74b7c355e8b29c700915e6deb79ae5629ba0f3ed6cb7072b51075e8499b9a747b92fcb1ab1087316d7aed902239b0b606991eb5e2b4dfc466fffd7e8ef9163092a3e7a2235ded246ad93abf5c3c1434ae92b5c83a49f/master.m3u8'
-  const video = useRef(null);
-  const slider = useRef(null);
+
+  // const url = 'https://live-par-2-cdn-alt.livepush.io/live/bigbuckbunnyclip/index.m3u8'
+  const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
-  // const [url, setUlr] = useState([]);
+  const [url, setUlr] = useState([]);
   const [isReady, setIsReady] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  // const [isVisible, setIsVisible] = useState(true);
-  // const fadeAnim = new Animated.Value(1);
 
   useEffect(() => {
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
@@ -45,7 +34,7 @@ export default function Player2() {
       }
     }
 
-    // playVideo(episodeId)
+    playVideo(episodeId)
  
   }, []);
 
@@ -56,101 +45,8 @@ export default function Player2() {
     }
   };
 
-  function showControlls(){
-    // console.log("§")
-   
-    if(fadeAnim._value === 1){
-      fadeOut()
-    }else{
-      fadeIn()
-    }
-    
-  }
-
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      video.current.pauseAsync();
-      fadeIn();
-    } else {
-      video.current.playAsync();
-      fadeOut();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleSkipBackward = async () => {
-    if (video.current) {
-      const status = await video.current.getStatusAsync();
-      const newPosition = Math.max(status.positionMillis - 10000, 0);
-      video.current.setPositionAsync(newPosition);
-    }
-  };
-
-  const handleSkipForward = async () => {
-    if (video.current) {
-      const status = await video.current.getStatusAsync();
-      const newPosition = Math.min(status.positionMillis + 10000, status.durationMillis);
-      video.current.setPositionAsync(newPosition);
-    }
-  };
-
-  function formate(duration) {
-    var seconds = parseInt((duration/1000)%60)     
-    var minutes = parseInt((duration/(1000*60))%60)
-    var hours = parseInt((duration/(1000*60*60))%24);
-
-    hours = (hours < 10) ? null + hours : hours;
-    minutes = (minutes < 10) ? "0" + minutes : minutes;
-    seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-    if(hours){
-      return hours + ":" + minutes + ":" + seconds;
-    }else{
-      return minutes + ":" + seconds;
-    }
-  }
-
- 
-  const fadeOut = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 500, 
-      useNativeDriver: false,
-    }).start(() => {
-      isVisible = false
-    });
-  }
-
-  const fadeIn = () => {
-    isVisible = true
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500, 
-      useNativeDriver: false, 
-    }).start(() => {
-      
-      setTimeout(() => {
-        console.log(isPlaying)
-        if(isPlaying){
-          fadeOut();
-        }
-      }, 4000);
-      
-    })
-  
-  }
-
-
-  function goBack(){
-    if(fadeAnim._value === 1){
-      router.back()
-    }
-    
-  }
-
-
   return (
-    <Pressable style={styles.container} onPress={() => showControlls()}>
+    <View style={styles.container}>
       <StatusBar barStyle={'light-content'} hidden={true} />
       <Video
         ref={video}
@@ -158,79 +54,33 @@ export default function Player2() {
         source={{
           uri: url,
         }}
-        useNativeControls={false}
+        useNativeControls
         resizeMode={ResizeMode.CONTAIN}
-        shouldPlay={false}
+        shouldPlay
         isMuted={false}
         positionMillis={playStartTime ? parseFloat(playStartTime) : 0}
         onPlaybackStatusUpdate={(newStatus) => {
           setStatus(() => newStatus);
           if (!isReady && newStatus.isLoaded) {
             setIsReady(true);
-            setIsLoading(false);
-            setIsPlaying(true)
-            fadeOut();
-            video.current.playAsync();
-            // openFullscreenPlayer(); 
+            openFullscreenPlayer(); 
           }
         }}
         onFullscreenUpdate={(e)=>{
           if (e.fullscreenUpdate === 3) {
             // console.log("realm-------->", "TitleID:",titleId, "EpisodeID:",episodeId, "Title:",title, "Number:",number, "Time:",status.positionMillis, "Duration:",status.durationMillis, "Url:",url, "PosterURL:",poster);
            
-            // setWatchProgressSeason(realm, episodeId, status.positionMillis, status.durationMillis)
-            // setContinueWatching(realm, titleId, episodeId, title, parseInt(number), status.positionMillis, status.durationMillis, url, poster)
+            setWatchProgressSeason(realm, episodeId, status.positionMillis, status.durationMillis)
+            setContinueWatching(realm, titleId, episodeId, title, parseInt(number), status.positionMillis, status.durationMillis, url, poster)
   
             router.back()
           }
         }}
       />
 
-      <Animated.View style={{ ...styles.epInfo, opacity: fadeAnim }}>
-        <Text style={{color: 'white', fontSize: 20,}}>E{number}: {title}</Text>
-        <Entypo name="cross" size={24} color="white" style={{backgroundColor: 'transparent'}} onPress={()=> { goBack() }}/>
-      </Animated.View>
-
-      {isLoading ? 
-        <Loading /> :
-        <>
-        <Animated.View style={{ ...styles.playCtl, opacity: fadeAnim }}>
-          <TouchableOpacity style={styles.buttons} onPress={handleSkipBackward}>
-            <MaterialIcons name="replay-10" size={40} color='#fff' />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.playButtons} onPress={handlePlayPause}>
-            {isPlaying ? <Entypo name="controller-paus" size={50} color='#fff' /> : <Entypo name="controller-play" size={50} color='#fff' />}
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttons} onPress={handleSkipForward}>
-            <MaterialIcons name="forward-10" size={40} color='#fff' />
-          </TouchableOpacity>
-        </Animated.View> 
+      {isLoading && <Loading />}
       
-
-        <Animated.View style={{ ...styles.timeStamp, opacity: fadeAnim }}>
-          <Text style={{color: 'white'}}>{formate(status.positionMillis)}</Text>
-          <Slider
-            style={{flex: 1, height: 40}}
-            minimumValue={0}
-            maximumValue={status.durationMillis}
-            step={1000}
-            tapToSeek={false}
-            disabled={!isVisible}
-            value={status.positionMillis}
-            onValueChange={(value) => {
-              // console.log(formate(value))
-              video.current.setPositionAsync(value);
-            }}
-            minimumTrackTintColor="#b70710"
-            maximumTrackTintColor="#666666"
-            thumbTintColor="#e50914"
-          />
-          <Text style={{color: 'white'}}>{formate(status.durationMillis)}</Text>
-      </Animated.View>
-      </>
-    }
-      
-    </Pressable>
+    </View>
   );
 }
 
@@ -241,52 +91,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   video: {
-    // flex: 1,
-    display: 'flex',
-    position: 'absolute',
+    display: 'none',
     alignSelf: 'center',
-    width: '100%',
-    height: '100%',
-    // zIndex: 10,
-  },
-  playButtons: {
-    marginHorizontal: 30,
-    height: 50,
-    width: 45,
+    width: 320,
+    height: 200,
   },
   buttons: {
-    // margin: 10,
-    justifyContent: 'center',
-    height: 50,
-    width: 50,
-  },
-  playCtl: {
-    position: 'absolute',
-    color: 'white',
     flexDirection: 'row',
-    alignSelf: 'center',
-    zIndex: 100,
-  },
-  timeStamp: {
-    position: 'absolute',
-    bottom: 0,
-    width:'100%',
-    flexDirection:'row',
-    justifyContent:'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
-    color: 'white',
-    zIndex: 100,
-    paddingLeft: 20,
-    paddingRight: 20,
-  },
-  epInfo: {
-    position: 'absolute',
-    flexDirection:'row',
-    width:'100%' ,
-    justifyContent:'space-between',
-    alignItems: 'center',
-    top: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
   },
 });
