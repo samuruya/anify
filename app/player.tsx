@@ -7,6 +7,7 @@ import { setWatchProgressSeason, setContinueWatching } from './db'
 import { useRealm } from "@realm/react";
 import Slider from '@react-native-community/slider';
 import { FontAwesome, Entypo, MaterialIcons } from '@expo/vector-icons';
+import { host } from '../constants/Host';
 
 var isVisible = true 
 const fadeAnim = new Animated.Value(1);
@@ -36,7 +37,7 @@ export default function Player2() {
 
     async function playVideo(episodeId){
       try {
-        const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
+        const resp = await fetch(`${host}/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
         const jsonData = await resp.json();
         setUlr(jsonData.sources[0].url)
         console.log("done Fetching URL", jsonData.sources[0].url);

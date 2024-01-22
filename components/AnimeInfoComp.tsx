@@ -9,6 +9,7 @@ import episodeData from '../assets/json-data/episodeData.json'
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import { useQuery, useRealm } from "@realm/react";
 import { Skeleton } from '@rneui/themed';
+import { host } from '../constants/Host';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -64,11 +65,11 @@ const [loading, setLoading] = useState(true);
 
   async function updateInfo(id){
     try {
-      const resp = await fetch(`https://api-aniwatch.onrender.com/anime/info?id=${id}`);
+      const resp = await fetch(`${host}/anime/info?id=${id}`);
       const jsonData = await resp.json();
       setData(jsonData);
 
-      const respEpisodes = await fetch(`https://api-aniwatch.onrender.com/anime/episodes/${id}`);
+      const respEpisodes = await fetch(`${host}/anime/episodes/${id}`);
       const jsonDataEpisodes = await respEpisodes.json();
       setEpisodeData(jsonDataEpisodes);
     } catch (error) {
@@ -78,7 +79,7 @@ const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     try {
-      const resp = await fetch(`https://api-aniwatch.onrender.com/anime/info?id=${id}`);
+      const resp = await fetch(`${host}/anime/info?id=${id}`);
       const jsonData = await resp.json();
       setData(jsonData);
     } catch (error) {
@@ -87,7 +88,7 @@ const [loading, setLoading] = useState(true);
   };
     const fetchEpisodes = async () => {
     try {
-      const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episodes/${id}`);
+      const resp = await fetch(`${host}/anime/episodes/${id}`);
       const jsonData = await resp.json();
       setEpisodeData(jsonData);
     } catch (error) {
@@ -124,7 +125,7 @@ const [loading, setLoading] = useState(true);
 
   // async function playVideo(episodeId){
   //   try {
-  //     const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
+  //     const resp = await fetch(`${host}/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
   //     const jsonData = await resp.json();
   //     const url = jsonData.sources[0].url
   //     router.push({ pathname: "/player", params: { url: url } })

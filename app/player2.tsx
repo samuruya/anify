@@ -5,6 +5,7 @@ import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import Loading from '../components/loading';
 import { setWatchProgressSeason, setContinueWatching } from './db'
 import { useRealm } from "@realm/react";
+import { host } from '../constants/Host';
 
 export default function Player() {
   const realm = useRealm();
@@ -23,7 +24,7 @@ export default function Player() {
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
     async function playVideo(episodeId){
       try {
-        const resp = await fetch(`https://api-aniwatch.onrender.com/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
+        const resp = await fetch(`${host}/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
         const jsonData = await resp.json();
         setUlr(jsonData.sources[0].url)
         console.log("done Fetching URL", jsonData.sources[0].url);

@@ -8,6 +8,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useQuery, useRealm } from "@realm/react";
 import { HomeData } from '../realmModels';
 import { BSON } from 'realm';
+import { host } from '../../constants/Host';
 
 const conWatchingItemConWith = 200;
 
@@ -36,7 +37,7 @@ export default function HomeScreen() {
 
   const fetchData = async () => {
     try {
-      const resp = await fetch("https://api-aniwatch.onrender.com/anime/home");
+      const resp = await fetch("${host}/anime/home");
       const jsonData = await resp.json();
       updateHomeData(data)
   //    setData(jsonData);

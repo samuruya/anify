@@ -3,6 +3,7 @@ import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity, 
 // import Carousel from 'react-native-snap-carousel';
 import data from '../assets/json-data/spotlightData.json';
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
+import { host } from '../constants/Host';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -15,7 +16,7 @@ export default function Spotlight() {
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
-  //       const resp = await fetch("https://api-aniwatch.onrender.com/anime/home");
+  //       const resp = await fetch("${host}/anime/home");
   //       const jsonData = await resp.json();
   //       setData(jsonData);
   //     } catch (error) {

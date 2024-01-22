@@ -34,34 +34,29 @@ export default function AnimeInfo() {
     // console.log("Length:",render.length)
     // setRenderList(render)
   }
-  function goBack(){
+  const goBack = () => {
 
-    console.info("renderList:",renderList.length)
-    setRenderList((prevRenderList) => prevRenderList.slice(0, -1));
-    console.log("new renderList:",renderList.length)
+    // console.info("renderList:",renderList.length)
+    // setRenderList((prevRenderList) => prevRenderList.slice(0, -1));
+    // console.log("new renderList:",renderList.length)
+    
+    if(renderList.length > 1){
+      console.log("sliceList")
+    }else{
+      console.log("goBack")
+    }
     // console.log("back:",render.length);
     // render.pull(render.length)
     // setRenderList(render)
   }
 
-  // useEffect(() => {
-  //   const backHandler = BackHandler.addEventListener(
-  //     'hardwareBackPress',
-  //     () => {
-       
-  //       if (renderList.length > 1) {
-  //         goBack()
-  //         return true;
-  //       } else {
-         
-  //         goBack()
-  //         // router.back();
-  //       }
-  //     }
-  //   );
-  //   backHandler
-  //   // return () => backHandler.remove(); 
-  // }, [router]);
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', goBack);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', goBack);
+    };
+  }, [renderList]);
 
 
   return (

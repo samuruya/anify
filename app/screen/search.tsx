@@ -5,6 +5,7 @@ import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { BlurView } from '@react-native-community/blur';
+import { host } from '../../constants/Host';
 // import data from '../assets/json-data/search.json'
 
 const windowWidth = Dimensions.get('window').width;
@@ -20,7 +21,7 @@ export default function SearchScreen() {
   
       const fetchData = async () => {
         try {
-          const resp = await fetch(`https://api-aniwatch.onrender.com/anime/search?q=${query}`);
+          const resp = await fetch(`${host}/anime/search?q=${query}`);
           const jsonData = await resp.json();
           setData(jsonData);
         } catch (error) {
