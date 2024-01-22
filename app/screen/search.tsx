@@ -4,7 +4,6 @@ import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { BlurView } from '@react-native-community/blur';
 import { host } from '../../constants/Host';
 // import data from '../assets/json-data/search.json'
 

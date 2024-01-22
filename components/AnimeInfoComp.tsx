@@ -3,9 +3,8 @@ import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Di
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { getWatchProgressMovie, } from '../app/db'
-import data from '../assets/json-data/animeinfo.json'
-import episodeData from '../assets/json-data/episodeData.json'
+import data1 from '../assets/json-data/animeinfo.json'
+import episodeData1 from '../assets/json-data/episodeData.json'
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import { useQuery, useRealm } from "@realm/react";
 import { Skeleton } from '@rneui/themed';
@@ -19,7 +18,7 @@ const overlayContainerTopWidth = 100;
 export default function AnimeInfoComp({ id, newComponent }: { id: string; newComponent: (id: string) => void }) {
   const router = useRouter();
 //   const { id } = useLocalSearchParams();
-const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const continueWatchingeItem = useQuery("ContinueWatching").filtered('id == $0',id)[0]
   const [continueWatchingTime, setContinueWatchingTime] = useState({});
   
@@ -32,9 +31,30 @@ const [loading, setLoading] = useState(true);
   useEffect(() => {
     console.log('Passed ID', id);
     
+    const fetchData = async () => {
+      try {
+        const [infoResp, episodesResp] = await Promise.all([
+          fetch(`${host}/anime/info?id=${id}`).then((res) => res.json()),
+          fetch(`${host}/anime/episodes/${id}`).then((res) => res.json()),
+        ]);
+        console.log("Done Fetching --->")
+        setData(infoResp);
+        setEpisodeData(episodesResp);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        router.back();
+      }
+    };
+
     fetchData();
-    fetchEpisodes();
   }, []);
+
+  useEffect(() => {
+    if(!loading){
+      console.log("Loading FALSE -->");
+    }
+  }, [loading]);
 
   useEffect(() => {
     const continueWatching = async () => {
@@ -43,10 +63,10 @@ const [loading, setLoading] = useState(true);
         const find = episodeData.episodes.find((episode) => episode.episodeId === continueWatchingeItem.episodeId);
         const res = { timeInfo: continueWatchingeItem, episodeInfo: find }; 
         setContinueWatchingTime(res);
-        console.log('time: not NULL:', continueWatchingeItem);
+        // console.log('time: not NULL:', continueWatchingeItem);
       } else {
         setContinueWatchingTime(null);
-        console.log('time: NULL:', continueWatchingeItem);
+        // console.log('time: NULL:', continueWatchingeItem);
       }
     };
   
@@ -54,14 +74,6 @@ const [loading, setLoading] = useState(true);
     
   }, [continueWatchingeItem, episodeData]);
 
-  useEffect(() => {
-   
-    if (data[0] !== null && episodeData[0] !== null) {
-      setLoading(false)
-      console.log("done LOADING --->>>>>>>")
-    }
-    
-  }, [data, episodeData]);
 
   async function updateInfo(id){
     try {
@@ -77,24 +89,7 @@ const [loading, setLoading] = useState(true);
     }
   }
 
-  const fetchData = async () => {
-    try {
-      const resp = await fetch(`${host}/anime/info?id=${id}`);
-      const jsonData = await resp.json();
-      setData(jsonData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-    const fetchEpisodes = async () => {
-    try {
-      const resp = await fetch(`${host}/anime/episodes/${id}`);
-      const jsonData = await resp.json();
-      setEpisodeData(jsonData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  
 
   function playCurrent(){
     if (continueWatchingTime) {
