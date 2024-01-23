@@ -137,6 +137,7 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
   //     </View>
   //   );
   // }
+  const poster = <Image source={{ uri: data.anime?.info.poster }} style={styles.episodeImg } />
 
   return (
     <>
@@ -267,7 +268,7 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
             <TouchableOpacity onPress={() =>  router.push({ pathname: "/player", params: { episodeId: episode.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: episode.number, title: episode.title } }) }>
               <View style={styles.innerContainer}>
                 <View style={styles.overlayContainerTop}>
-                  <Image source={{ uri: data.anime?.info.poster }} style={styles.episodeImg } />
+                  {poster}
                     <View style={styles.overlayContainer}>
                       <FontAwesome name="play-circle" size={40} color='#777' style={{ zIndex: 1 }} />
                     </View>
