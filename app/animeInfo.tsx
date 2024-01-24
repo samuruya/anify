@@ -35,19 +35,16 @@ export default function AnimeInfo() {
     // setRenderList(render)
   }
   const goBack = () => {
-
-    // console.info("renderList:",renderList.length)
-    // setRenderList((prevRenderList) => prevRenderList.slice(0, -1));
-    // console.log("new renderList:",renderList.length)
     
     if(renderList.length > 1){
-      console.log("sliceList")
+      // console.log("sliceList")
+      setRenderList((prevRenderList) => prevRenderList.slice(0, -1));
     }else{
-      console.log("goBack")
+      // console.log("goBack")
+      router.back()
     }
-    // console.log("back:",render.length);
-    // render.pull(render.length)
-    // setRenderList(render)
+
+    return true;
   }
 
   useEffect(() => {
@@ -62,8 +59,8 @@ export default function AnimeInfo() {
   return (
     <>
       <StatusBar barStyle={'light-content'}/>
-      {/* {render[render.length - 1]} */}
       {renderList[renderList.length - 1]}
+
       {renderList.length > 1 && (
         <Pressable style={styles.backButton} onPress={() => goBack()}>
           <FontAwesome name="chevron-left" size={40} color='grey' style={{ zIndex: 1 }} />

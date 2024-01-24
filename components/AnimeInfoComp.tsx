@@ -29,7 +29,7 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
  
  
   useEffect(() => {
-    console.log('Passed ID', id);
+    // console.log('Passed ID', id);
     
     const fetchData = async () => {
       try {
@@ -84,6 +84,7 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
       const respEpisodes = await fetch(`${host}/anime/episodes/${id}`);
       const jsonDataEpisodes = await respEpisodes.json();
       setEpisodeData(jsonDataEpisodes);
+      console.log("updated")
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -137,6 +138,32 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
   //     </View>
   //   );
   // }
+  function Episodes ({item}) {
+    const res = useRealm().objects("WatchProgressSeason").filtered('episodeId == $0',item.episodeId)[0]
+        
+         return (
+          <View key={item.episodeId} style={styles.episodeContainer}>
+            <TouchableOpacity onPress={() =>  router.push({ pathname: "/player", params: { episodeId: item.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: item.number, title: item.title } }) }>
+              <View style={styles.innerContainer}>
+                <View style={styles.overlayContainerTop}>
+                  {poster}
+                    <View style={styles.overlayContainer}>
+                      <FontAwesome name="play-circle" size={40} color='#777' style={{ zIndex: 1 }} />
+                    </View>
+                    {res?.time !== undefined && res?.length !== undefined ? (
+                      <View>
+                        <View style={styles.progressLineFull} />
+                        <View style={[styles.progressLine, { width: (res?.time / res?.length) * overlayContainerTopWidth }]} />
+                      </View>
+                    ) : null}
+                </View>
+                <Text style={styles.episodeText }>{item.number}. {item.title}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        );  
+  }
+
   const poster = <Image source={{ uri: data.anime?.info.poster }} style={styles.episodeImg } />
 
   return (
@@ -147,31 +174,33 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
         <Skeleton
           width={windowWidth}
           height={220}
-          animation="pulse"
+          animation="wave"
           style={styles.mainPosterSkeleton}
         />
         <Skeleton
+          circle
           width={150}
-          height={20}
-          animation="pulse"
+          height={15}
+          animation="wave"
           style={styles.titleSkeleton}
         />
         <Skeleton
           width={windowWidth - 150}
           height={40}
-          animation="pulse"
+          animation="wave"
           style={styles.playButtonSkeleton}
         />
         <Skeleton
           width={windowWidth - 30}
           height={100}
-          animation="pulse"
+          animation="wave"
           style={styles.descriptionSkeleton}
         />
         <Skeleton
-          width={60}
-          height={20}
-          animation="pulse"
+          circle
+          width={70}
+          height={15}
+          animation="wave"
           style={styles.subtitleSkeleton}
         />
         <View style={styles.seasonScrollContainer}>
@@ -180,19 +209,29 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
               key={seasonId}
               width={110}
               height={50}
-              animation="pulse"
+              animation="wave"
               style={styles.seasonContainerSkeleton}
             />
         ))}
         </View>
         {Array.from({ length: 10 }).map((_, index) => (
+          <View style={styles.episodeContainerSkeleton}>
           <Skeleton
             key={index}
-            width={windowWidth - 30}
-            height={100}
-            animation="pulse"
-            style={styles.episodeContainerSkeleton}
+            width={100}
+            height={50}
+            animation="wave"
+            style={styles.episodePosterSkeleton}
           />
+          <Skeleton
+            circle
+            key={index+":2"}
+            width={150}
+            height={15}
+            animation="wave"
+            style={styles.episodeTextSkeleton}
+          />
+          </View>
         ))}
 
       </View>
@@ -258,33 +297,13 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
       </ScrollView>
 
       {/* Render Episodes */}
-      {episodeData.episodes && data.anime?.info.poster && episodeData.episodes?.map((episode) => {
-        //  const res = getWatchProgressSeason(episode.episodeId);
-        //  const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
-        const res = useRealm().objects("WatchProgressSeason").filtered('episodeId == $0',episode.episodeId)[0]
-        
-         return (
-          <View key={episode.episodeId} style={styles.episodeContainer}>
-            <TouchableOpacity onPress={() =>  router.push({ pathname: "/player", params: { episodeId: episode.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: episode.number, title: episode.title } }) }>
-              <View style={styles.innerContainer}>
-                <View style={styles.overlayContainerTop}>
-                  {poster}
-                    <View style={styles.overlayContainer}>
-                      <FontAwesome name="play-circle" size={40} color='#777' style={{ zIndex: 1 }} />
-                    </View>
-                    {res?.time !== undefined && res?.length !== undefined ? (
-                      <View>
-                        <View style={styles.progressLineFull} />
-                        <View style={[styles.progressLine, { width: (res?.time / res?.length) * overlayContainerTopWidth }]} />
-                      </View>
-                    ) : null}
-                </View>
-                <Text style={styles.episodeText }>{episode.number}. {episode.title}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        );  
-      })}
+      <View style={styles.episodeContainerOuther}> 
+        <FlatList
+          removeClippedSubviews
+          data={episodeData?.episodes}
+          renderItem={( {item} ) => ( <Episodes item={item} /> )}
+        />
+      </View>
 
       {/* Render most popular animes */}
       <Text style={styles.subtitle}>Most Popular Animes:</Text>
@@ -459,7 +478,7 @@ const styles = StyleSheet.create({
   episodeContainer: {
     width: '100%',
     margin: 5,
-    paddingLeft: 20,
+    paddingLeft: 10,
     // backgroundColor: 'grey',
   },
   innerContainer: {
@@ -476,6 +495,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  episodeContainerOuther: {
+    width: '100%',
   },
   overlayContainer: {
     height: '100%',
@@ -554,14 +576,28 @@ const styles = StyleSheet.create({
   },
   seasonContainerSkeleton: {
     margin: 10,
-    width: 110,
-    height: 50,
+    borderRadius: 10,
   },
   episodeContainerSkeleton: {
-    width: windowWidth - 30,
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'center',
     margin: 10,
     marginBottom: 5,
-    height: 100,
+  
+  },
+  episodePosterSkeleton: {
+    // margin: 10,
+    marginBottom: 5,
+    borderRadius: 5,
+  
+  },
+  episodeTextSkeleton: {
+    // margin: 10,
+    marginBottom: 5,
+    marginLeft: 10,
+  
   },
   
  
