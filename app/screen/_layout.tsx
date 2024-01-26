@@ -1,8 +1,10 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import {FontAwesome, Entypo} from '@expo/vector-icons';
 import { Link, Tabs } from 'expo-router';
 import { Pressable, useColorScheme } from 'react-native';
 
 import Colors from '../../constants/Colors';
+import { color } from '@rneui/themed/dist/config';
+import { BlurView } from 'expo-blur';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -21,12 +23,19 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarStyle: {
+          backgroundColor: 'transparent',
+          position: 'absolute'
+          },
+          tabBarBackground: () => (
+            <BlurView  intensity={50} style={{width: '100%', height: '100%', backgroundColor: 'rgba(5, 5, 5, 0.7)', backgroundBlendMode: 'hidden'}}  />
+          ),
       }}>
       <Tabs.Screen
         name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color }) => <Entypo size={28} style={{ marginBottom: -3 }} name="home" color={color} />,
         }}
       />
       <Tabs.Screen

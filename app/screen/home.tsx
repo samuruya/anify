@@ -22,10 +22,9 @@ export default function HomeScreen() {
   console.log("width:",windowWidth)
  
   const continueWatchingeItems = useQuery("ContinueWatching").sorted("datetime", true)
-  // const homeData = useQuery("HomeData")[0]
-  
+ 
 
-  
+   // const homeData = useQuery("HomeData")[0]
   // const [data, setData] = useState([]);
   // useEffect(() => {
 
@@ -105,7 +104,6 @@ export default function HomeScreen() {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View>
       <StatusBar barStyle={'light-content'}/>
-        <Text style={styles.label}>Spotlight</Text>
         <FlatList
           key={generateRandomID()}
           data={data?.spotlightAnimes}
@@ -130,12 +128,14 @@ export default function HomeScreen() {
                     </View>
                   <Image source={{ uri: item.posterUrl }} style={styles.conWatchPoster} />
                     <Pressable onPress={() => router.push({ pathname: "/animeInfo", params: { id: item.id } }) }>
-                      <BlurView intensity={10} style={styles.blurContainer} >
+                      <BlurView intensity={5} style={styles.blurContainer} >
                         <Text style={styles.description2}>E{item.number}: {item.title}</Text>
                       </BlurView>
                     </Pressable>
-                  <View style={styles.progressLineFull} />
-                  <View style={[styles.progressLine, { width: (item.time / item.length) * conWatchingItemConWith }]} />
+                    <View style={styles.progressLineCon}>
+                      <View style={styles.progressLineFull} />
+                      <View style={[styles.progressLine, { width: (item.time / item.length) * conWatchingItemConWith }]} />
+                    </View>
                 </View>
                 {/* <Text>{item.name}</Text> */}
               </View>
@@ -225,6 +225,7 @@ export default function HomeScreen() {
         
         
       </View>
+      <View style={{marginBottom: 50}} />
     </ScrollView>
   );
 }
@@ -240,8 +241,9 @@ const styles = StyleSheet.create({
     // marginTop: 10,
     // borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    alignItems: 'center',
+    // alignItems: 'center',
     height: 300,
+    top: 0
     
   },
   spotlightPoster: {
@@ -307,7 +309,7 @@ const styles = StyleSheet.create({
     bottom: 18,
   },
   blurContainer: {
-    // backgroundColor: 'rgba(119, 119, 119, 0.9)',
+    backgroundColor: 'rgba(103, 103, 103, 0.4)',
     position: 'absolute',
     alignSelf: 'flex-start',
     bottom: 0,
@@ -327,6 +329,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingBottom: 30,
     zIndex: 100,
+  },
+  progressLineCon: {
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 7,
+    width: conWatchingItemConWith -20,
+    height: 5,
+    borderRadius: 5,
+    overflow: 'hidden',
   },
   progressLineFull: {
     position: 'absolute',
