@@ -1,5 +1,5 @@
 import { BSON } from 'realm';
-import { WatchProgressSeason, ContinueWatching, WatchProgressMovie } from './realmModels'
+import { WatchProgressSeason, ContinueWatching, WatchProgressMovie, Settings } from './realmModels'
 
 
 export function setWatchProgressSeason(realm, episodeId, time, length){
@@ -61,5 +61,26 @@ export function setContinueWatching(realm, titleId, episodeId, title, eNumber, t
         });
     }
 
+    
+}
+
+export function setSetting(realm, setting, value){
+    const toUpdate = realm.objects('Settings').filtered('setting == $0', setting)[0]
+
+    if(toUpdate !== undefined) {
+        console.info("Realm: Update Setting");
+        realm.write(() => {
+            toUpdate.value = value
+          });
+
+    }else{
+        console.error("Realm: Create Setting --> ERROR");
+        realm.write(() => {
+            realm.create(Settings, {
+                setting: setting,
+                value: value
+            });
+        });
+    }
     
 }

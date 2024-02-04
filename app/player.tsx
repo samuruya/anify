@@ -16,7 +16,7 @@ var isPlaying = false
 export default function Player2() {
   const realm = useRealm();
   const router = useRouter();
-  const { episodeId, playStartTime, titleId, poster, number, title } = useLocalSearchParams();
+  const { episodeId, playStartTime, titleId, poster, number, title, language } = useLocalSearchParams();
   
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
@@ -26,6 +26,7 @@ export default function Player2() {
   const slider = useRef(null);
   const [status, setStatus] = React.useState({});
   const [url, setUlr] = useState([]);
+  const [urlSub, setUlrSub] = useState([]);
   const [isReady, setIsReady] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   // const [isPlaying, setIsPlaying] = useState(false);
@@ -37,9 +38,10 @@ export default function Player2() {
 
     async function playVideo(episodeId){
       try {
-        const resp = await fetch(`${host}/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
+        const resp = await fetch(`${host}/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=${language}`);
         const jsonData = await resp.json();
         setUlr(jsonData.sources[0].url)
+        // setUlrSub(jsonData.subtitles[1].url)
         console.log("done Fetching URL", jsonData.sources[0].url);
         //  console.log("playtime",playStartTime);
       } catch (error) {
@@ -175,9 +177,7 @@ export default function Player2() {
       <Video
         ref={video}
         style={styles.video}
-        source={{
-          uri: url,
-        }}
+        source={{ uri: url }}
         useNativeControls={false}
         resizeMode={ResizeMode.CONTAIN}
         shouldPlay={false}

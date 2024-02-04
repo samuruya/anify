@@ -14,22 +14,15 @@ export default function ProfileScreen() {
   const ContinueWatching = useQuery("ContinueWatching").sorted("datetime", true)
   const WatchProgressSeason = useQuery("WatchProgressSeason")
   const res = useQuery("WatchProgressSeason").filtered('episodeId == $0',"jujutsu-kaisen-2nd-season-18413?ep=102662")[0]
+  const language = useQuery("Settings").filtered('setting == $0','language')[0]
 
   const testData = useRealm().objects("HomeData")[0]
 
   const [data, setData] = useState([null]);
 
     const printDb = () => {
-      console.info(ContinueWatching);
-      console.log("res:", res);
-      // if (res !== undefined) {
-      //   console.log("nicht undefiniert");
-      // }else{
-      //   console.log("undefiniert");
-      // }
-      ContinueWatching.map((s, index) => (
-        console.log("q:", s.number)
-      ))
+      console.info(language);
+      
     }
 
     const test = () => {

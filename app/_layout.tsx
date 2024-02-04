@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { Platform, useColorScheme, StatusBar } from 'react-native';
 import { RealmProvider } from '@realm/react';
 import * as Device from 'expo-device';
-import { WatchProgressSeason, WatchProgressMovie, ContinueWatching, HomeData } from './realmModels'
+import { WatchProgressSeason, WatchProgressMovie, ContinueWatching, HomeData, Settings } from './realmModels'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -57,7 +57,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <RealmProvider schema={[WatchProgressSeason, WatchProgressMovie, ContinueWatching, HomeData]}>
+    <RealmProvider schema={[WatchProgressSeason, WatchProgressMovie, ContinueWatching, HomeData, Settings]}>
        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DarkTheme}>
           <Stack>
             <Stack.Screen name="screen" options={{ headerShown: false, orientation: t }} />

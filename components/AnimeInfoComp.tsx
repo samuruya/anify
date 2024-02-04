@@ -2,13 +2,14 @@ import React, {useState, useEffect} from 'react';
 import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button, Pressable, ActivityIndicator } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import data1 from '../assets/json-data/animeinfo.json'
-import episodeData1 from '../assets/json-data/episodeData.json'
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import data from '../assets/json-data/animeinfo.json'
+import episodeData from '../assets/json-data/episodeData.json'
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
-import { useQuery, useRealm } from "@realm/react";
+import { useQuery, useRealm, Realm } from "@realm/react";
 import { Skeleton } from '@rneui/themed';
 import { host } from '../constants/Host';
+import { setSetting } from '../app/db'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -19,11 +20,13 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
   const router = useRouter();
 //   const { id } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
+  const [popup, setPopup] = useState(false);
   const continueWatchingeItem = useQuery("ContinueWatching").filtered('id == $0',id)[0]
+  const language = useQuery("Settings").filtered('setting == $0','language')[0]
   const [continueWatchingTime, setContinueWatchingTime] = useState({});
   
-  const [data, setData] = useState([null]);
-  const [episodeData, setEpisodeData] = useState([null]);
+  // const [data, setData] = useState([null]);
+  // const [episodeData, setEpisodeData] = useState([null]);
 
 
  
@@ -47,7 +50,8 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
       }
     };
 
-    fetchData();
+    setLoading(false);
+    // fetchData();
   }, []);
 
   useEffect(() => {
@@ -94,11 +98,11 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
 
   function playCurrent(){
     if (continueWatchingTime) {
-      router.push({ pathname: "/player", params: { episodeId: continueWatchingTime.timeInfo.episodeId, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.timeInfo.number, title: continueWatchingTime.timeInfo.title } })
+      router.push({ pathname: "/player", params: { episodeId: continueWatchingTime.timeInfo.episodeId, playStartTime: continueWatchingTime.timeInfo.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: continueWatchingTime.timeInfo.number, title: continueWatchingTime.timeInfo.title, language: language.value } })
     }else{
       const find = episodeData.episodes.find((episode) => episode.number === 1);
     //   console.info("info: ",data.anime?.info.id);
-      router.push({ pathname: "/player", params: { episodeId: find.episodeId, playStartTime: 0, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: 1, title: find.title } })
+      router.push({ pathname: "/player", params: { episodeId: find.episodeId, playStartTime: 0, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: 1, title: find.title, language: language.value } })
     //   console.log(find);
     }
     
@@ -119,6 +123,12 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
   const truncatedText = isExpanded ? data.anime?.info.description : words?.slice(0, 20).join(' ') + '...';
 
 
+  function setLanguage(value){
+    const realm = new Realm();
+    setSetting(realm, 'language', value)
+    console.log(language.value)
+    // setPopup(false)
+  }
   // async function playVideo(episodeId){
   //   try {
   //     const resp = await fetch(`${host}/anime/episode-srcs?id=${episodeId}&server=vidstreaming&category=dub`);
@@ -143,7 +153,7 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
         
          return (
           <View key={item.episodeId} style={styles.episodeContainer}>
-            <TouchableOpacity onPress={() =>  router.push({ pathname: "/player", params: { episodeId: item.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: item.number, title: item.title } }) }>
+            <TouchableOpacity onPress={() =>  router.push({ pathname: "/player", params: { episodeId: item.episodeId, playStartTime: res?.time, titleId: data.anime?.info.id, poster: data.anime?.info.poster, number: item.number, title: item.title, language: language.value } }) }>
               <View style={styles.innerContainer}>
                 <View style={styles.overlayContainerTop}>
                   {poster}
@@ -274,6 +284,23 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
         <TouchableOpacity onPress={toggleText}>
          <Text style={styles.description}>{truncatedText}</Text>
         </TouchableOpacity>
+
+      {/* Settings */}
+      <View style={{flexDirection: 'row', }}>
+
+      <TouchableOpacity style={{alignItems: 'center', marginHorizontal: 10, }} onPress={() => console.log("add list") }>
+          <MaterialIcons  name="add" size={24} color="white" />
+          <Text style={{fontSize: 10}} >Add</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={{alignItems: 'center', marginHorizontal: 10, }} onPress={() => setPopup(true)}>
+          <MaterialCommunityIcons name="subtitles" size={24} color="white" />
+          <Text style={{fontSize: 10}} >Settings</Text>
+        </TouchableOpacity>
+
+      </View>
+
+      
   
       {/* Render seasons */}
       <Text style={styles.subtitle}>Seasons:</Text>
@@ -372,8 +399,30 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
 
     </View>
     </ScrollView>
-
+    
     }
+    
+    {/* popup  */}
+    {popup ? (
+      <Pressable style={styles.popupContainer} onPress={() => setPopup(false)}>
+        <View style={styles.popup}>
+          <TouchableOpacity onPress={() => setPopup(false)}>
+            <Text>Close</Text>
+          </TouchableOpacity>
+
+          <View style={styles.popupContent}>
+            <TouchableOpacity onPress={() => setLanguage('dub')}>
+              <Text style={language.value === 'dub' && {color: 'yellow'}}>Dub</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setLanguage('sub')}>
+              <Text style={language.value === 'sub' && {color: 'yellow'}}>Sub</Text>
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      </Pressable>
+      ) : (null)}
+
     </>
   );
 }
@@ -598,6 +647,34 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 10,
   
+  },
+  popupContainer: {
+    position: 'absolute',
+    top: 0,
+    backgroundColor: 'transparent',
+    width: '100%',
+    height: '100%',
+    zIndex: 2000,
+  },
+  popup: {
+    position: 'absolute',
+    bottom: 0,
+    backgroundColor: 'grey',
+    width: '100%',
+    height: 300,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    zIndex: 1000,
+  },
+  popupContent: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
   },
   
  

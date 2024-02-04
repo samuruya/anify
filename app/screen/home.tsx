@@ -21,6 +21,7 @@ export default function HomeScreen() {
   const windowWidth = Dimensions.get('window').width;
   console.log("width:",windowWidth)
  
+  const language = useQuery("Settings").filtered('setting == $0','language')[0]
   const continueWatchingeItems = useQuery("ContinueWatching").sorted("datetime", true)
  
 
@@ -120,7 +121,7 @@ export default function HomeScreen() {
           key={generateRandomID()}
           data={continueWatchingeItems}
           renderItem={({ item }) => (
-            <Pressable onPress={() => router.push({ pathname: "/player", params: { episodeId: item.episodeId, playStartTime: item.time, titleId: item.id, poster: item.posterUrl, number: item.number, title: item.title } }) }>
+            <Pressable onPress={() => router.push({ pathname: "/player", params: { episodeId: item.episodeId, playStartTime: item.time, titleId: item.id, poster: item.posterUrl, number: item.number, title: item.title, language: language.value } }) }>
               <View style={styles.flatlist} >
                 <View style={styles.conWatchingItemCon}>
                   <View style={styles.overlayContainer}>

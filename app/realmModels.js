@@ -76,3 +76,13 @@ HomeData.schema = {
     data: 'string',
   },
 };
+
+export class Settings extends Realm.Object {}
+Settings.schema = {
+  name: 'Settings',
+  primaryKey: "setting",
+  properties: {
+    setting: 'string',
+    value: 'string',
+  },
+};
