@@ -16,7 +16,13 @@ export default {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
   },
+  wht: '#ffffff',
+  blu: '#2f95dc',
+  altbc: '#202020',
+  onyx: '#404040',
 };
+
+
 
 // export default {
 //   light: {

@@ -21,15 +21,30 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      
       screenOptions={{
+        headerBackgroundContainerStyle: {
+          backgroundColor: Colors.onyx
+        },
+        headerTitleAlign: 'center',
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         tabBarStyle: {
+          marginTop: 20,
           backgroundColor: 'transparent',
-          position: 'absolute'
-          },
-          tabBarBackground: () => (
-            <BlurView  intensity={50} style={{width: '100%', height: '100%', backgroundColor: 'rgba(5, 5, 5, 0.7)', backgroundBlendMode: 'hidden'}}  />
-          ),
+          position: 'absolute',
+          height: 70,
+          borderTopColor: 'transparent',
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        tabBarItemStyle: {
+          position: 'relative',
+        },
+        tabBarShowLabel: false,
+        tabBarBackground: () => (
+          <BlurView  intensity={50} style={{width: '100%', height: '100%', backgroundColor: 'rgba(5, 5, 5, 0.7)', backgroundBlendMode: 'hidden'}}  />
+        ),
+        tabBarHideOnKeyboard: true,
       }}>
       <Tabs.Screen
         name="home"

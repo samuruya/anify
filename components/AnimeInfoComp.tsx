@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button, Pressable, ActivityIndicator } from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import { Platform, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity, Dimensions, Button, Pressable, ActivityIndicator, Modal, Animated} from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
-import { FontAwesome, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import data from '../assets/json-data/animeinfo.json'
 import episodeData from '../assets/json-data/episodeData.json'
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
@@ -10,6 +10,8 @@ import { useQuery, useRealm, Realm } from "@realm/react";
 import { Skeleton } from '@rneui/themed';
 import { host } from '../constants/Host';
 import { setSetting } from '../app/db'
+import Colors from '../constants/Colors';
+import Divider from './misc/divider';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -25,10 +27,22 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
   const language = useQuery("Settings").filtered('setting == $0','language')[0]
   const [continueWatchingTime, setContinueWatchingTime] = useState({});
   
+  
   // const [data, setData] = useState([null]);
   // const [episodeData, setEpisodeData] = useState([null]);
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  useEffect(() => {
+    Animated.timing(
+      fadeAnim,
+      {
+        toValue: 1,
+        duration: 500, // Adjust the duration as needed
+        useNativeDriver: true
+      }
+    ).start();
+  }, [fadeAnim]);
  
  
   useEffect(() => {
@@ -115,19 +129,30 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
 
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [lang, setlang] = useState(false)
+
+
 
   const toggleText = () => {
     setIsExpanded(!isExpanded);
   };
+
   const words = data.anime?.info.description.split(' ');
   const truncatedText = isExpanded ? data.anime?.info.description : words?.slice(0, 20).join(' ') + '...';
+
 
 
   function setLanguage(value){
     const realm = new Realm();
     setSetting(realm, 'language', value)
+    checklang()
     console.log(language.value)
     // setPopup(false)
+  }
+
+  function checklang(){
+    if(language.value == 'dub') setlang(false)
+    if(language.value == 'sub') setlang(true)
   }
   // async function playVideo(episodeId){
   //   try {
@@ -175,7 +200,6 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
   }
 
   const poster = <Image source={{ uri: data.anime?.info.poster }} style={styles.episodeImg } />
-
   return (
     <>
     {loading ? (
@@ -284,24 +308,24 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
         <TouchableOpacity onPress={toggleText}>
          <Text style={styles.description}>{truncatedText}</Text>
         </TouchableOpacity>
-
+        
       {/* Settings */}
       <View style={{flexDirection: 'row', }}>
 
       <TouchableOpacity style={{alignItems: 'center', marginHorizontal: 10, }} onPress={() => console.log("add list") }>
           <MaterialIcons  name="add" size={24} color="white" />
           <Text style={{fontSize: 10}} >Add</Text>
-        </TouchableOpacity>
+      </TouchableOpacity>
         
-        <TouchableOpacity style={{alignItems: 'center', marginHorizontal: 10, }} onPress={() => setPopup(true)}>
+        <TouchableOpacity style={{alignItems: 'center', marginHorizontal: 10, }} onPress={() => {setPopup(true); checklang()}}>
           <MaterialCommunityIcons name="subtitles" size={24} color="white" />
           <Text style={{fontSize: 10}} >Settings</Text>
         </TouchableOpacity>
-
+        
       </View>
 
+      <Divider/>
       
-  
       {/* Render seasons */}
       <Text style={styles.subtitle}>Seasons:</Text>
       <ScrollView
@@ -331,10 +355,11 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
           renderItem={( {item} ) => ( <Episodes item={item} /> )}
         />
       </View>
-
+      <Divider/>
       {/* Render most popular animes */}
-      <Text style={styles.subtitle}>Most Popular Animes:</Text>
-      {/* {data.mostPopularAnimes?.map((mostPopularAnimes) => (
+      
+      {/* <Text style={styles.subtitle}>Most Popular Animes:</Text> 
+        {data.mostPopularAnimes?.map((mostPopularAnimes) => (
         <View key={mostPopularAnimes.id}>
           <Text>{mostPopularAnimes.name}</Text>
           <Image source={{ uri: mostPopularAnimes.poster }} style={styles.poster} />
@@ -402,27 +427,70 @@ export default function AnimeInfoComp({ id, newComponent }: { id: string; newCom
     
     }
     
-    {/* popup  */}
-    {popup ? (
-      <Pressable style={styles.popupContainer} onPress={() => setPopup(false)}>
+{/* popup  */}
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={popup}
+      onRequestClose={() => {
+        setPopup(false);
+    }}>
         <View style={styles.popup}>
           <TouchableOpacity onPress={() => setPopup(false)}>
-            <Text>Close</Text>
+            <Entypo name="cross" size={48} color="white" style={{
+              paddingTop: 10,
+              paddingLeft: 10,
+            }} />
           </TouchableOpacity>
+          <Animated.View style={[styles.popupContent, {opacity: fadeAnim}]}>
+          <View style={{
+            width: '100%',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            backgroundColor: 'transparent'
+          }}>
+          {lang ? (
 
-          <View style={styles.popupContent}>
-            <TouchableOpacity onPress={() => setLanguage('dub')}>
-              <Text style={language.value === 'dub' && {color: 'yellow'}}>Dub</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setLanguage('sub')}>
-              <Text style={language.value === 'sub' && {color: 'yellow'}}>Sub</Text>
-            </TouchableOpacity>
+            <View style={styles.rad}>
+              <TouchableOpacity onPress={() => {
+                setLanguage('dub')
+                setlang(false)
+                }} style={[styles.dubbtn ,styles.radin]}>
+                <Text style={language.value === 'dub' && {color: 'black'}}>Dub</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+                setLanguage('sub')
+                setlang(true)
+                }} style={[styles.subbtn ,styles.radac]}>
+                <Text style={language.value === 'sub' && {color: 'black'}}>Sub</Text>
+              </TouchableOpacity>
+            </View>
+          
+          ) : (
+              <View style={styles.rad}>
+                <TouchableOpacity onPress={() => {
+                  setLanguage('dub')
+                  setlang(false)
+                  }} style={[styles.dubbtn, styles.radac]}>
+                  <Text style={language.value === 'dub' && {color: 'black'}}>Dub</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                  setLanguage('sub')
+                  setlang(true)
+                  }} style={[styles.subbtn, styles.radin]}>
+                  <Text style={language.value === 'sub' && {color: 'black'}}>Sub</Text>
+                </TouchableOpacity>
+              </View>
+          )}
           </View>
+          </Animated.View>
 
         </View>
+      </Modal>
+    {popup ? (
+      <Pressable style={styles.popupContainer} onPress={() => setPopup(false)}>
       </Pressable>
       ) : (null)}
-
     </>
   );
 }
@@ -651,15 +719,16 @@ const styles = StyleSheet.create({
   popupContainer: {
     position: 'absolute',
     top: 0,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     width: '100%',
     height: '100%',
     zIndex: 2000,
   },
   popup: {
     position: 'absolute',
+    gap: 20,
     bottom: 0,
-    backgroundColor: 'grey',
+    backgroundColor: Colors.altbc,
     width: '100%',
     height: 300,
     borderTopLeftRadius: 10,
@@ -667,15 +736,43 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   popupContent: {
-    position: 'relative',
     width: '100%',
-    height: '100%',
     backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
+  },  
+  rad: {
+    maxWidth: '50%',
+    borderRadius: 20,
+    position: 'relative',
+    padding: 20,
+    backgroundColor: Colors.onyx,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    rowGap: 10,
   },
-  
- 
+  dubbtn: {
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    paddingTop: 10,
+    paddingRight: 20,
+    paddingBottom: 10,
+    paddingLeft: 20,
+  },
+  subbtn: {
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    paddingTop: 10,
+    paddingRight: 20,
+    paddingBottom: 10,
+    paddingLeft: 20,
+  },
+  radac: {
+    backgroundColor: 'yellow',
+    color: '#000'
+  },
+  radin: {
+    backgroundColor: '#000',
+  },
 });

@@ -9,6 +9,8 @@ import { useQuery, useRealm } from "@realm/react";
 import { HomeData } from '../realmModels';
 import { BSON } from 'realm';
 import { host } from '../../constants/Host';
+import Divider from '../../components/misc/divider';
+import Foot from '../../components/misc/Foot';
 
 const conWatchingItemConWith = 200;
 
@@ -116,13 +118,14 @@ export default function HomeScreen() {
         />
 
         {/* Render Contine Watching */}
-        <Text style={styles.subtitle}>Continue Watching:</Text>
+
         <FlatList
           key={generateRandomID()}
           data={continueWatchingeItems}
           renderItem={({ item }) => (
             <Pressable onPress={() => router.push({ pathname: "/player", params: { episodeId: item.episodeId, playStartTime: item.time, titleId: item.id, poster: item.posterUrl, number: item.number, title: item.title, language: language.value } }) }>
               <View style={styles.flatlist} >
+              <Text style={styles.subtitle}>Continue Watching:</Text>
                 <View style={styles.conWatchingItemCon}>
                   <View style={styles.overlayContainer}>
                           <FontAwesome name="play-circle" size={60} color='#777' />
@@ -147,7 +150,8 @@ export default function HomeScreen() {
           // pagingEnabled
           bounces={true}
         />
-
+        <Divider/>
+        <View style={{marginBottom: 20}}/>
         {/* Render trending Animes */}
         <Text style={styles.subtitle}>Trending Animes:</Text>
         <FlatList
@@ -226,7 +230,9 @@ export default function HomeScreen() {
         
         
       </View>
-      <View style={{marginBottom: 50}} />
+      <View style={{marginBottom: 20}} />
+      <Foot/>
+      <View style={{marginBottom: 70}} />
     </ScrollView>
   );
 }
