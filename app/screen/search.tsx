@@ -5,6 +5,7 @@ import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { host } from '../../constants/Host';
+import Colors from '../../constants/Colors';
 // import data from '../assets/json-data/search.json'
 
 const windowWidth = Dimensions.get('window').width;
@@ -42,8 +43,10 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={{
+        height: 100
+      }}></View>
       <StatusBar barStyle={'light-content'}/>
-      
       <View style={styles.searchContainer}>
         <FontAwesome
           name="search"
@@ -71,14 +74,17 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 0,
     flex: 1,
     // alignItems: 'center',
     // justifyContent: 'flex-start',
   },
   searchContainer: {
+
+    flexDirection: 'row-reverse',
     // flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-evenly',
     paddingBottom: 30,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     backdropFilter: 'backdrop-filter: blur(2px)',
@@ -88,8 +94,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   input: {
+    borderRadius: 20,
     borderWidth: 1,
-    color: '#777',
+    color: Colors.wht,
     backgroundColor: '#323232',
     padding: 8,
     margin: 10,
