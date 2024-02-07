@@ -6,8 +6,9 @@ import { Link, useRouter } from 'expo-router';
 import { useQuery, useRealm } from '@realm/react';
 import { setWatchProgressSeason } from '../db';
 import { useState } from 'react';
-import { AntDesign, Entypo } from '@expo/vector-icons';
+import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
+import Divider from '../../components/misc/divider';
 
 export default function ProfileScreen() {
 
@@ -38,17 +39,39 @@ export default function ProfileScreen() {
   
     return (
       <View style={styles.container}>
+        <View style={{
+        height: 100
+        }}></View>
         <StatusBar barStyle={'light-content'}/>
 
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        {/*<View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />*/}
         
-        <TouchableOpacity onPress={() => setShowDev(true)}>
-          <View style={styles.popbtn}>
-            <Text style={styles.title}>Settings (dev)</Text>
-            <AntDesign name="calculator" size={24} color={Colors.back} />
+        <View style={styles.prof}>
+          <View style={styles.profI}>
+            <View style={{
+              height: 100,
+              width: 100,
+              backgroundColor: Colors.onyx,
+              borderRadius: 50,
+            }}></View>
           </View>
-        </TouchableOpacity>
-
+          <View style={styles.profI}>
+            <TouchableOpacity onPress={() => setShowDev(true)}>
+              <View style={styles.popbtn}>
+                <Text style={styles.title}>Settings (dev)</Text>
+                <AntDesign name="calculator" size={24} color={Colors.back} />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.popbtn}>
+                <Text style={styles.title}>Settings</Text>
+                <Ionicons name="settings-sharp" size={24} color="black" />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <Divider/>
+          
         <Modal 
           animationType='slide'
           transparent={true}
@@ -129,13 +152,21 @@ export default function ProfileScreen() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     title: {
       fontSize: 20,
       fontWeight: 'bold',
-      color: Colors.back
+      color: Colors.back,
+    },
+    prof: {
+      width: '100%',
+      flexDirection: 'row',
+      alignItems:'center',
+      justifyContent: 'space-around'
+    },
+    profI: {
+      gap: 20,
+
     },
     separator: {
       marginVertical: 30,
@@ -151,11 +182,13 @@ export default function ProfileScreen() {
     },
     popbtn: {
       backgroundColor: Colors.wht,
-      flexDirection: 'row',
+      flexDirection: 'row-reverse',
       alignItems: 'center',
+      justifyContent: 'center',
       paddingVertical: 10,
       paddingHorizontal: 20,
       borderRadius: 15,
+      gap: 10
     },
     popup: {
       width: '100%',

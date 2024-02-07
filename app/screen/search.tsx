@@ -50,11 +50,12 @@ export default function SearchScreen() {
       <View style={styles.searchContainer}>
         <FontAwesome
           name="search"
-          size={25}
-          color='#777'
+          size={35}
+          color={Colors.onyx}
         />
         <TextInput 
           style={styles.input} 
+          placeholderTextColor={Colors.wht}
           placeholder='Search'
           onSubmitEditing={(event) => search(event.nativeEvent.text.trim())}
         />
@@ -94,11 +95,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   input: {
-    borderRadius: 20,
+    borderRadius: 15,
     borderWidth: 1,
     color: Colors.wht,
     backgroundColor: '#323232',
-    padding: 8,
+    padding: 15,
     margin: 10,
     width: windowWidth - 100,
   },
