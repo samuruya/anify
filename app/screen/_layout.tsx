@@ -5,6 +5,7 @@ import { Pressable, useColorScheme } from 'react-native';
 import Colors from '../../constants/Colors';
 import { color } from '@rneui/themed/dist/config';
 import { BlurView } from 'expo-blur';
+import { View } from '../../components/Themed';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -22,30 +23,73 @@ export default function TabLayout() {
   return (
     <Tabs
       
-      screenOptions={{
-        headerBackgroundContainerStyle: {
-          backgroundColor: Colors.onyx
-        },
-        headerTitleAlign: 'center',
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        tabBarStyle: {
-          marginTop: 20,
+    screenOptions={{
+      headerTransparent: true,
+
+      headerBackgroundContainerStyle: {
+        flex: 1, // Allow the background to expand to cover the entire header
+        alignItems: 'center', // Center the background content horizontally
+        justifyContent: 'center', // Center the background content vertically
+      },
+      
+      headerTitleContainerStyle: {
+        backgroundColor: 'transparent',
+        paddingTop: 2,
+        paddingRight: 20,
+        paddingBottom: 2,
+        paddingLeft: 20,
+      },
+      headerTitleAlign: 'center',
+      tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+      tabBarStyle: {
+        marginTop: 20,
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        height: 70,
+        borderTopColor: 'transparent',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      tabBarItemStyle: {
+        position: 'relative',
+      },
+      tabBarShowLabel: false,
+      tabBarBackground: () => (
+        <BlurView intensity={50} style={{ 
+          width: '100%', 
+          height: '100%', 
+          backgroundColor: 'rgba(5, 5, 5, 0.7)', 
+          backgroundBlendMode: 'hidden' 
+        }} />
+      ),
+      headerBackground: () => (
+        <View style={{
           backgroundColor: 'transparent',
-          position: 'absolute',
-          height: 70,
-          borderTopColor: 'transparent',
-          alignItems: 'center',
+          width: '50%',
+          height: '100%',
+          justifyContent: 'flex-end',
+          alignItems: 'center'
+        }}>
+          <View style={{
+          borderRadius: 20,
+          backgroundColor: 'transparent',
+          width: '50%',
+          height: '65%',
           justifyContent: 'center',
-        },
-        tabBarItemStyle: {
-          position: 'relative',
-        },
-        tabBarShowLabel: false,
-        tabBarBackground: () => (
-          <BlurView  intensity={50} style={{width: '100%', height: '100%', backgroundColor: 'rgba(5, 5, 5, 0.7)', backgroundBlendMode: 'hidden'}}  />
-        ),
-        tabBarHideOnKeyboard: true,
-      }}>
+          alignItems: 'center',
+          overflow: 'hidden'
+        }}>
+          <BlurView intensity={50} style={{
+            width: '150%', 
+            height: '150%', 
+            backgroundColor: 'rgba(5, 5, 5, 0.5)', 
+            backgroundBlendMode: 'hidden' 
+          }} />
+          </View>
+        </View>
+      ),
+      tabBarHideOnKeyboard: true,
+    }}>
       <Tabs.Screen
         name="home"
         options={{
