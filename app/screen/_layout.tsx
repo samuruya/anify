@@ -71,7 +71,7 @@ export default function TabLayout() {
           alignItems: 'center'
         }}>
           <View style={{
-          borderRadius: 20,
+          borderRadius: 10,
           backgroundColor: 'transparent',
           width: '50%',
           height: '65%',

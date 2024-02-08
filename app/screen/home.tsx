@@ -249,13 +249,14 @@ const styles = StyleSheet.create({
     // borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     // alignItems: 'center',
-    height: 300,
-    top: 0
+    height: 350,
+    top: 0,
+    overflow: 'hidden',
     
   },
   spotlightPoster: {
-    width: 350,
-    height: 200,
+    width: '100%',
+    height: 300,
   },
   title: {
     fontSize: 16,

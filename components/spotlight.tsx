@@ -71,12 +71,12 @@ const styles = StyleSheet.create({
     // borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     alignItems: 'center',
-    height: 300,
+    height: 400,
     width: windowWidth,
   },
   poster: {
-    width: 350,
-    height: 200,
+    width: '100%',
+    height: '100%',
   },
   title: {
     fontSize: 16,
